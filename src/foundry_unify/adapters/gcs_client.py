@@ -57,11 +57,11 @@ class GCSArtifactReader:
         try:
             # #ASSUME: external_resources: GCS bucket and blob exist and are readable
             # #VERIFY: bucket and blob existence; caller should handle GCSError
-            text: str = (  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
-                self._get_client()
-                .bucket(bucket_name)
-                .blob(blob_path)
-                .download_as_text()
+            text: str = (  # pyright: ignore[reportAny]
+                self._get_client()  # pyright: ignore[reportAny]
+                .bucket(bucket_name)  # pyright: ignore[reportAny]
+                .blob(blob_path)  # pyright: ignore[reportAny]
+                .download_as_text()  # pyright: ignore[reportAny]  # GCS SDK has no stubs
             )
         except Exception as exc:  # nosec BLE001 -- GCS SDK raises heterogeneous exceptions (google-api-core, network errors, auth errors); spec requires wrapping all in GCSError
             msg = f"Failed to download DocumentMetadata.json: {exc}"
@@ -113,10 +113,12 @@ class GCSArtifactWriter:
         try:
             # #ASSUME: external_resources: GCS bucket exists and is writable
             # #VERIFY: bucket existence and write permissions; caller should handle GCSError
-            blob = (  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
-                self._get_client().bucket(bucket_name).blob(blob_path)
+            blob = (  # pyright: ignore[reportAny]
+                self._get_client()  # pyright: ignore[reportAny]
+                .bucket(bucket_name)  # pyright: ignore[reportAny]
+                .blob(blob_path)  # pyright: ignore[reportAny]  # GCS SDK has no stubs
             )
-            blob.upload_from_string(  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
+            blob.upload_from_string(  # pyright: ignore[reportAny]  # GCS SDK has no stubs
                 data=json_bytes,
                 content_type="application/json",
             )
