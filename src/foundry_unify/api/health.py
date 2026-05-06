@@ -14,6 +14,7 @@ Implements:
 
 from __future__ import annotations
 
+import asyncio
 import sys
 import time
 
@@ -77,66 +78,6 @@ async def liveness() -> HealthStatus:
     )
 
 
-async def check_cache() -> ReadinessCheck:
-    """Check Redis/cache connectivity.
-
-    Returns:
-        ReadinessCheck with cache status and latency
-    """
-    start = time.time()
-    try:
-        # Example Redis check - adjust based on your cache implementation
-        # from foundry_unify.core.cache import redis_client
-        # await redis_client.ping()
-
-        # Placeholder - replace with actual cache check
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="cache",
-            status=True,
-            latency_ms=round(latency_ms, 2),
-        )
-    except Exception as e:
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="cache",
-            status=False,
-            latency_ms=round(latency_ms, 2),
-            error=str(e),
-        )
-
-
-async def check_external_service() -> ReadinessCheck:
-    """Check external API/service connectivity.
-
-    Returns:
-        ReadinessCheck with external service status
-    """
-    start = time.time()
-    try:
-        # Example external service check
-        # import httpx
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get("https://api.example.com/health", timeout=2.0)
-        #     response.raise_for_status()
-
-        # Placeholder - replace with actual external service check
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="external_api",
-            status=True,
-            latency_ms=round(latency_ms, 2),
-        )
-    except Exception as e:
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="external_api",
-            status=False,
-            latency_ms=round(latency_ms, 2),
-            error=str(e),
-        )
-
-
 @router.get(
     "/ready",
     response_model=ReadinessStatus,
@@ -153,8 +94,9 @@ async def readiness() -> ReadinessStatus:
 
     # Check docling-serve
     start = time.time()
-    client = DoclingServeClient(base_url=settings.docling_serve_url)
-    reachable = client.health_check()
+    # health_check() uses a hard 5-second timeout internally; docling_serve_timeout_seconds does not apply here
+    with DoclingServeClient(base_url=settings.docling_serve_url) as docling_client:
+        reachable = await asyncio.to_thread(docling_client.health_check)
     checks["docling_serve"] = ReadinessCheck(
         name="docling_serve",
         status=reachable,
@@ -223,54 +165,3 @@ async def health() -> HealthStatus:
     that expect a /health endpoint.
     """
     return await liveness()
-
-
-# =============================================================================
-# Kubernetes Probe Configuration Examples
-# =============================================================================
-"""
-Add to your Kubernetes Deployment YAML:
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: foundry_unify
-spec:
-  template:
-    spec:
-      containers:
-      - name: app
-        image: foundry_unify:latest
-        ports:
-        - containerPort: 8000
-
-        # Liveness probe - restart if fails
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
-
-        # Readiness probe - stop traffic if fails
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-
-        # Startup probe - delay other probes during startup
-        startupProbe:
-          httpGet:
-            path: /health/startup
-            port: 8000
-          initialDelaySeconds: 0
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 30  # 30 * 5s = 150s max startup time
-"""
