@@ -339,6 +339,7 @@ known-first-party = ["foundry_unify"]
 # Scripts (utility code - not packages)
 "scripts/**/*.py" = [
     "ANN", "D", "T20", "TRY", "PTH", "PLR",
+    "N802",   # AST visitor methods must follow ast.NodeVisitor naming convention
     "INP",    # Scripts are not packages
     "EM",     # Utility scripts don't need perfect error messages
     "T10",    # Debugger allowed during script development
@@ -423,6 +424,7 @@ known-first-party = ["foundry_unify"]
 
 # Logging utilities - Structlog processor interface
 "src/*/utils/logging.py" = [
+    "A005",    # Intentional: this module wraps stdlib logging (same name by design)
     "ARG001",  # Unused args required by structlog processor interface
     "TC002",   # Processor needs to be runtime-available
 ]

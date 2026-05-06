@@ -40,6 +40,9 @@ H1_RE = re.compile(r"^\s*#\s+(.+?)\s*$", re.MULTILINE)
 # Create type adapter for validating discriminated union
 FM_ADAPTER: TypeAdapter[DiscriminatedFM] = TypeAdapter(DiscriminatedFM)
 
+# Directories excluded from front-matter validation (plans, ADRs, dev-tool dirs)
+_EXCLUDED_DIRS: frozenset[str] = frozenset({"planning", "ADRs", "superpowers"})
+
 
 def load_allowlists(docroot: Path) -> tuple[set[str], set[str]]:
     """Load tag and owner allow-lists from YAML files.
@@ -260,23 +263,21 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    # Collect Markdown files (excluding planning docs)
+    # Collect Markdown files (excluding planning docs, ADRs, and dev-tool dirs)
     md_files: list[Path] = []
     for path_str in args.paths:
         path = Path(path_str)
         if path.is_dir():
-            # Exclude docs/planning/ from validation
             all_md_files = path.rglob("*.md")
             md_files.extend(
                 [
                     f
                     for f in all_md_files
-                    if not any(part == "planning" for part in f.parts)
+                    if not any(part in _EXCLUDED_DIRS for part in f.parts)
                 ]
             )
         elif path.suffix.lower() == ".md":
-            # Only add file if not in planning directory
-            if "planning" not in path.parts:
+            if not any(part in _EXCLUDED_DIRS for part in path.parts):
                 md_files.append(path)
 
     if not md_files:

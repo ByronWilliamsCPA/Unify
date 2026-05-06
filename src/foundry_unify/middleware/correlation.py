@@ -151,8 +151,8 @@ def correlation_context_processor(
         )
 
     Args:
-        logger: The wrapped logger instance.
-        method_name: The name of the log method called.
+        _logger: The wrapped logger instance.
+        _method_name: The name of the log method called.
         event_dict: The event dictionary to process.
 
     Returns:
