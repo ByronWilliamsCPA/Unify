@@ -57,7 +57,7 @@ class DoclingServeClient:
 
     def _get_client(self) -> httpx.Client:
         if self._client is None or self._client.is_closed:
-            self._client = httpx.Client(  # nosec B113
+            self._client = httpx.Client(  # nosec B113 - timeout set via httpx.Timeout(self.timeout)
                 base_url=self.base_url,
                 timeout=httpx.Timeout(self.timeout),
             )
