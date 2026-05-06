@@ -8,9 +8,12 @@ Paths follow the canonical GCS layout:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from foundry_unify.core.exceptions import GCSError
+
+if TYPE_CHECKING:
+    from foundry_unify.models.docling_dom import DoclingDOM
 from foundry_unify.models.document_metadata import InboundDocumentMetadata
 from foundry_unify.utils.logging import get_logger
 
@@ -54,7 +57,7 @@ class GCSArtifactReader:
         try:
             # #ASSUME: external_resources: GCS bucket and blob exist and are readable
             # #VERIFY: bucket and blob existence; caller should handle GCSError
-            text: str = (
+            text: str = (  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
                 self._get_client()
                 .bucket(bucket_name)
                 .blob(blob_path)
@@ -83,7 +86,7 @@ class GCSArtifactWriter:
 
     def write_docling_dom(
         self,
-        dom: Any,  # pyright: ignore[reportAny, reportExplicitAny]  # DoclingDOM typed as Any; runtime injection via dataclass field
+        dom: DoclingDOM,
         env: str,
         trace_id: str,
     ) -> str:
@@ -104,14 +107,16 @@ class GCSArtifactWriter:
         blob_path = f"{trace_id}/03-docling-dom/DoclingDOM.json"
         gcs_path = f"gs://{bucket_name}/{blob_path}"
 
-        json_bytes = dom.model_dump_json(indent=2).encode("utf-8")  # pyright: ignore[reportAny]
+        json_bytes = dom.model_dump_json(indent=2).encode("utf-8")
 
         logger.info("gcs_write_start", path=gcs_path, bytes=len(json_bytes))
         try:
             # #ASSUME: external_resources: GCS bucket exists and is writable
             # #VERIFY: bucket existence and write permissions; caller should handle GCSError
-            blob = self._get_client().bucket(bucket_name).blob(blob_path)
-            blob.upload_from_string(
+            blob = (  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
+                self._get_client().bucket(bucket_name).blob(blob_path)
+            )
+            blob.upload_from_string(  # pyright: ignore[reportAny]  # GCS SDK has no stubs; chained call returns Any
                 data=json_bytes,
                 content_type="application/json",
             )

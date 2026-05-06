@@ -6,6 +6,7 @@ import json
 from unittest.mock import MagicMock
 
 import pytest
+from pydantic import ValidationError
 
 from foundry_unify.adapters.gcs_client import GCSArtifactReader, GCSArtifactWriter
 from foundry_unify.core.exceptions import GCSError
@@ -21,8 +22,6 @@ def _make_metadata_json() -> str:
             "num_pages": 2,
             "pdf_type": "born_digital",
             "processing_recommendation": {"tier": "standard"},
-            "processing_version": {"version": "1.0"},
-            "pages": [{"page_number": 1}, {"page_number": 2}],
         }
     )
 
@@ -96,7 +95,7 @@ def test_writer_uploads_dom_to_correct_path(mock_gcs_client: MagicMock) -> None:
         pages=[],
         metadata=DOMMetadata(processing_tier="standard", page_count=0),
     )
-    writer.write_docling_dom(dom=dom, env="prod", trace_id="trace-1")
+    result = writer.write_docling_dom(dom=dom, env="prod", trace_id="trace-1")
 
     mock_gcs_client.bucket.assert_called_once_with("rag-pipeline-prod")
     mock_gcs_client.bucket.return_value.blob.assert_called_once_with(
@@ -109,6 +108,11 @@ def test_writer_uploads_dom_to_correct_path(mock_gcs_client: MagicMock) -> None:
     )
     data = json.loads(uploaded)
     assert data["document_id"] == "doc-1"
+    assert result == "gs://rag-pipeline-prod/trace-1/03-docling-dom/DoclingDOM.json"
+    assert (
+        mock_blob.upload_from_string.call_args.kwargs.get("content_type")
+        == "application/json"
+    )
 
 
 @pytest.mark.unit
@@ -128,3 +132,17 @@ def test_writer_raises_gcs_error_on_upload_failure(mock_gcs_client: MagicMock) -
     )
     with pytest.raises(GCSError):
         writer.write_docling_dom(dom=dom, env="dev", trace_id="t")
+
+
+@pytest.mark.unit
+def test_reader_raises_on_invalid_json(mock_gcs_client: MagicMock) -> None:
+    """GCS returns corrupt JSON -- Pydantic ValidationError propagates (not wrapped in GCSError)."""
+    mock_blob = MagicMock()
+    mock_blob.download_as_text.return_value = "not-valid-json"
+    mock_gcs_client.bucket.return_value.blob.return_value = mock_blob
+
+    reader = GCSArtifactReader(
+        client=mock_gcs_client, bucket_template="rag-pipeline-{env}"
+    )
+    with pytest.raises(ValidationError):
+        reader.download_document_metadata(env="dev", trace_id="trace-corrupt")
