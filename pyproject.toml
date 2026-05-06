@@ -310,6 +310,9 @@ known-first-party = ["foundry_unify"]
 # Security middleware uses keyword-only args for a rich configuration surface
 "**/middleware/security.py" = ["PLR0913"]
 
+# DOMAssembler.assemble has 6 required args matching the pipeline contract spec
+"**/pipeline/dom_assembler.py" = ["PLR0913"]
+
 # Test files (relaxed rules for test code)
 "tests/**/*.py" = [
     "ANN",    # Type annotations not required in tests
