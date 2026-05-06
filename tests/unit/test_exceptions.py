@@ -711,6 +711,95 @@ class TestExceptionHierarchy:
             raise APIError("API failed")
 
 
+@pytest.mark.unit
+class TestDoclingServiceError:
+    """Tests for DoclingServiceError exception class."""
+
+    def test_default_fields(self) -> None:
+        from foundry_unify.core.exceptions import DoclingServiceError
+
+        err = DoclingServiceError("connection refused", status_code=503)
+        assert err.details is not None
+        assert err.details.get("status_code") == 503
+        assert err.error_code == "DOCLING_SERVICE_ERROR"
+
+    def test_message_preserved(self) -> None:
+        from foundry_unify.core.exceptions import DoclingServiceError
+
+        err = DoclingServiceError("timeout")
+        assert "timeout" in str(err)
+
+    def test_service_name_set(self) -> None:
+        from foundry_unify.core.exceptions import DoclingServiceError
+
+        err = DoclingServiceError("error")
+        assert err.details.get("service_name") == "docling-serve"
+
+
+@pytest.mark.unit
+class TestGCSError:
+    """Tests for GCSError exception class."""
+
+    def test_path_in_details(self) -> None:
+        from foundry_unify.core.exceptions import GCSError
+
+        err = GCSError(
+            "download failed", path="gs://rag-pipeline-prod/x/DoclingDOM.json"
+        )
+        assert err.details is not None
+        assert err.details["path"] == "gs://rag-pipeline-prod/x/DoclingDOM.json"
+        assert err.error_code == "GCS_ERROR"
+
+    def test_no_path(self) -> None:
+        from foundry_unify.core.exceptions import GCSError
+
+        err = GCSError("write failed")
+        assert err.error_code == "GCS_ERROR"
+        assert "path" not in err.details
+
+
+@pytest.mark.unit
+class TestMissingSourceTrackError:
+    """Tests for MissingSourceTrackError exception class."""
+
+    def test_error_code(self) -> None:
+        from foundry_unify.core.exceptions import MissingSourceTrackError
+
+        err = MissingSourceTrackError(received="bogus")
+        assert err.error_code == "MISSING_SOURCE_TRACK"
+        assert err.details.get("field") == "source_track"
+
+    def test_no_received(self) -> None:
+        from foundry_unify.core.exceptions import MissingSourceTrackError
+
+        err = MissingSourceTrackError()
+        assert err.error_code == "MISSING_SOURCE_TRACK"
+
+    def test_message(self) -> None:
+        from foundry_unify.core.exceptions import MissingSourceTrackError
+
+        err = MissingSourceTrackError()
+        assert "source_track" in str(err)
+
+
+@pytest.mark.unit
+class TestMissingDoclingDOMError:
+    """Tests for MissingDoclingDOMError exception class."""
+
+    def test_error_code(self) -> None:
+        from foundry_unify.core.exceptions import MissingDoclingDOMError
+
+        err = MissingDoclingDOMError()
+        assert err.error_code == "MISSING_DOCLING_DOM"
+        assert err.details.get("field") == "docling_document"
+
+    def test_message(self) -> None:
+        from foundry_unify.core.exceptions import MissingDoclingDOMError
+
+        err = MissingDoclingDOMError()
+        assert "docling_document" in str(err)
+
+
 class TestModuleExports:
     """Tests for module exports in __all__."""
 
