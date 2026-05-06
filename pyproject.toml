@@ -392,6 +392,11 @@ known-first-party = ["foundry_unify"]
     "INP",    # Not packages
 ]
 
+# GCS adapter - lazy google-cloud-storage import to avoid hard SDK dependency at import time
+"src/*/adapters/gcs_client.py" = [
+    "PLC0415", # Lazy import of google.cloud.storage avoids hard dependency at module load
+]
+
 # API health checks - Example code with template patterns
 "src/*/api/health.py" = [
     "ERA001",  # Commented code shows implementation examples
