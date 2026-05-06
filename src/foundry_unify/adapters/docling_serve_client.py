@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
+from pathlib import Path  # noqa: TC003
 from typing import TYPE_CHECKING, Any
 
 import httpx
@@ -16,8 +17,6 @@ from foundry_unify.core.exceptions import DoclingServiceError
 from foundry_unify.utils.logging import get_logger
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from foundry_unify.models.document_metadata import DoclingRoutingParams
 
 logger = get_logger(__name__)
@@ -58,7 +57,7 @@ class DoclingServeClient:
 
     def _get_client(self) -> httpx.Client:
         if self._client is None or self._client.is_closed:
-            self._client = httpx.Client(  # nosec B113 - timeout is set via httpx.Timeout(self.timeout)
+            self._client = httpx.Client(  # nosec B113
                 base_url=self.base_url,
                 timeout=httpx.Timeout(self.timeout),
             )
