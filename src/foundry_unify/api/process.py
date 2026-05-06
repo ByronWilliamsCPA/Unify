@@ -96,9 +96,16 @@ async def process(request: ProcessRequest) -> ProcessResponse:
             processing_tier="standard",
             processing_status="halted",
         )
-        gcs_path = writer.write_docling_dom(
-            dom=dom, env=request.env, trace_id=request.trace_id
-        )
+        try:
+            gcs_path = writer.write_docling_dom(
+                dom=dom, env=request.env, trace_id=request.trace_id
+            )
+        except GCSError as exc:
+            log.exception("gcs_write_failed", error=str(exc))
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Failed to write DoclingDOM.json: {exc}",
+            ) from exc
         return ProcessResponse(
             trace_id=request.trace_id,
             document_id=metadata.document_id,
@@ -131,11 +138,8 @@ async def process(request: ProcessRequest) -> ProcessResponse:
             detail=f"docling-serve error: {exc}",
         ) from exc
     finally:
-        # ASYNC240 suppressed: this is a sync cleanup of a local temp file
-        # in a finally block. The B1 sentinel PDF is a sub-millisecond unlink
-        # of a just-written local file; using anyio.Path here would add
-        # unnecessary async overhead for a trivial FS operation. Tracked by
-        # the B2 milestone where real GCS download replaces the sentinel path.
+        # ASYNC240: sync unlink of a just-written local sentinel file; anyio overhead
+        # not warranted here; real GCS download replaces this path in B2.
         with contextlib.suppress(FileNotFoundError):
             tmp_path.unlink()
 
