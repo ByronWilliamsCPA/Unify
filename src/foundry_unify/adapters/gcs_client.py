@@ -27,8 +27,8 @@ class GCSArtifactReader:
     bucket_template: str = "rag-pipeline-{env}"
     client: Any = field(default=None, repr=False)  # pyright: ignore[reportAny, reportExplicitAny]  # GCS client typed as Any; runtime injection via dataclass field
 
-    def _get_client(self) -> Any:  # pyright: ignore[reportAny]
-        if self.client is None:
+    def _get_client(self) -> Any:  # pyright: ignore[reportAny, reportExplicitAny]
+        if self.client is None:  # pyright: ignore[reportAny]
             from google.cloud import storage
 
             self.client = storage.Client()
@@ -77,8 +77,8 @@ class GCSArtifactWriter:
     bucket_template: str = "rag-pipeline-{env}"
     client: Any = field(default=None, repr=False)  # pyright: ignore[reportAny, reportExplicitAny]  # GCS client typed as Any; runtime injection via dataclass field
 
-    def _get_client(self) -> Any:  # pyright: ignore[reportAny]
-        if self.client is None:
+    def _get_client(self) -> Any:  # pyright: ignore[reportAny, reportExplicitAny]
+        if self.client is None:  # pyright: ignore[reportAny]
             from google.cloud import storage
 
             self.client = storage.Client()
