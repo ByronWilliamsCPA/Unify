@@ -6,6 +6,7 @@ and writes DoclingDOM.json to GCS.
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import tempfile
 from pathlib import Path
@@ -110,7 +111,7 @@ async def process(request: ProcessRequest) -> ProcessResponse:
             trace_id=request.trace_id,
             document_id=metadata.document_id,
             processing_status="halted",
-            processing_tier="standard",
+            processing_tier=tier.value,
             gcs_path=gcs_path,
         )
 
@@ -138,10 +139,8 @@ async def process(request: ProcessRequest) -> ProcessResponse:
             detail=f"docling-serve error: {exc}",
         ) from exc
     finally:
-        # ASYNC240: sync unlink of a just-written local sentinel file; anyio overhead
-        # not warranted here; real GCS download replaces this path in B2.
         with contextlib.suppress(FileNotFoundError):
-            tmp_path.unlink()
+            await asyncio.to_thread(tmp_path.unlink)
 
     postprocessor = LayoutPostprocessor(
         confidence_threshold=settings.layout_confidence_threshold

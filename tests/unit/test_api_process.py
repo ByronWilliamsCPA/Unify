@@ -85,18 +85,20 @@ def test_process_returns_422_for_audio_track_in_b1(client: TestClient) -> None:
 
 @pytest.mark.unit
 def test_process_returns_200_for_halted_document(client: TestClient) -> None:
+    from foundry_unify.pipeline.tier_selector import ProcessingTier
+
     with (
         patch("foundry_unify.api.process.GCSArtifactReader") as mock_reader_cls,
         patch("foundry_unify.api.process.GCSArtifactWriter") as mock_writer_cls,
+        patch("foundry_unify.api.process.TierSelector") as mock_tier_cls,
     ):
         mock_meta = MagicMock()
         mock_meta.source_track = "document"
         mock_meta.document_id = "doc-enc"
-        mock_meta.processing_status = "halted"
         mock_meta.docling_params = None
-        mock_meta.processing_recommendation = None
         mock_reader_cls.return_value.download_document_metadata.return_value = mock_meta
         mock_writer_cls.return_value.write_docling_dom.return_value = "gs://..."
+        mock_tier_cls.select.return_value = ProcessingTier.HALTED
 
         response = client.post(
             "/process",
@@ -104,4 +106,6 @@ def test_process_returns_200_for_halted_document(client: TestClient) -> None:
         )
 
     assert response.status_code == 200
-    assert response.json()["processing_status"] == "halted"
+    data = response.json()
+    assert data["processing_status"] == "halted"
+    assert data["processing_tier"] == "halted"
