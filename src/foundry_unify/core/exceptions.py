@@ -426,6 +426,95 @@ class BusinessLogicError(ProjectBaseError):
         )
 
 
+class DoclingServiceError(ExternalServiceError):
+    """Docling-serve API errors (connection failures, HTTP errors, parse failures)."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        """Initialize docling service error.
+
+        Args:
+            message: Description of the docling-serve error.
+            status_code: HTTP status code if applicable.
+            details: Additional context.
+        """
+        super().__init__(
+            message,
+            service_name="docling-serve",
+            status_code=status_code,
+            details=details,
+            error_code="DOCLING_SERVICE_ERROR",
+        )
+
+
+class GCSError(ExternalServiceError):
+    """GCS read or write errors."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        path: str | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        """Initialize GCS error.
+
+        Args:
+            message: Description of the GCS error.
+            path: GCS path involved in the error.
+            details: Additional context.
+        """
+        details = details or {}
+        if path:
+            details["path"] = path
+        super().__init__(
+            message,
+            service_name="GCS",
+            details=details,
+            error_code="GCS_ERROR",
+        )
+
+
+class MissingSourceTrackError(ValidationError):
+    """Source track field absent or unrecognized in input metadata.
+
+    Triggers a 422 response with error code MISSING_SOURCE_TRACK.
+    """
+
+    def __init__(self, received: str | None = None) -> None:
+        """Initialize missing source track error.
+
+        Args:
+            received: The value that was received (if any).
+        """
+        super().__init__(
+            "source_track field is missing or unrecognized",
+            field="source_track",
+            value=received,
+            error_code="MISSING_SOURCE_TRACK",
+        )
+
+
+class MissingDoclingDOMError(ValidationError):
+    """Audio track input is missing the pre-assembled docling_document field.
+
+    Triggers a 422 response with error code MISSING_DOCLING_DOM.
+    """
+
+    def __init__(self) -> None:
+        """Initialize missing docling DOM error."""
+        super().__init__(
+            "docling_document field is required for audio track input",
+            field="docling_document",
+            error_code="MISSING_DOCLING_DOM",
+        )
+
+
 # Export all exceptions
 __all__ = [
     "APIError",
@@ -434,7 +523,11 @@ __all__ = [
     "BusinessLogicError",
     "ConfigurationError",
     "DatabaseError",
+    "DoclingServiceError",
     "ExternalServiceError",
+    "GCSError",
+    "MissingDoclingDOMError",
+    "MissingSourceTrackError",
     "ProjectBaseError",
     "ResourceNotFoundError",
     "ValidationError",

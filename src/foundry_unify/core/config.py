@@ -1,23 +1,13 @@
-"""Configuration settings for Foundry Unify.
-
-Settings are loaded from environment variables with the prefix 'FOUNDRY_UNIFY_'.
-Pydantic-settings handles the parsing and validation.
-"""
+"""Configuration settings for Foundry Unify."""
 
 from typing import Literal
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """
-    Configuration settings for the application, loaded from environment variables.
-
-    Attributes:
-        log_level: The logging level for the application.
-        json_logs: Flag to enable or disable JSON formatted logs.
-        include_timestamp: Flag to include timestamps in logs.
-    """
+    """Application configuration loaded from environment variables (prefix: FOUNDRY_UNIFY_)."""
 
     model_config = SettingsConfigDict(
         env_prefix="foundry_unify_",
@@ -25,10 +15,35 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    # Logging
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     json_logs: bool = False
     include_timestamp: bool = True
 
+    # docling-serve connection
+    docling_serve_url: str = Field(
+        default="http://192.168.1.209:5001",
+        description="Base URL for the docling-serve HTTP API",
+    )
+    docling_serve_timeout_seconds: float = Field(
+        default=300.0,
+        gt=0,
+        description="Request timeout in seconds for docling-serve calls",
+    )
 
-# A single, global instance of the settings
+    # KI-002 mitigation: Table confidence threshold
+    layout_confidence_threshold: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Table detections below this confidence are reclassified to Text (KI-002)",
+    )
+
+    # GCS
+    gcs_bucket_template: str = Field(
+        default="rag-pipeline-{env}",
+        description="GCS bucket name template; {env} is replaced with the request env value",
+    )
+
+
 settings = Settings()

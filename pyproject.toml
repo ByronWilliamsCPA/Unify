@@ -26,6 +26,12 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "structlog>=23.1.0",
     "rich>=13.5.0",
+    "httpx>=0.27.0",
+    "google-cloud-storage>=2.10.0",
+    "fastapi>=0.120.1",
+    "uvicorn[standard]>=0.23.0",
+    "python-multipart>=0.0.18",
+    "starlette>=0.49.1",
     # Cross-Version Compatibility Dependencies
     # =========================================
     # This template targets Python 3.10-3.14. Add version-specific dependencies
@@ -130,12 +136,8 @@ ml = [
 ]
 
 
-# API framework dependencies
+# API framework dependencies (fastapi/uvicorn/python-multipart/starlette are in core deps)
 api = [
-    "fastapi>=0.120.1",
-    "uvicorn[standard]>=0.23.0",
-    "python-multipart>=0.0.18",
-    "starlette>=0.49.1",
     "sqlalchemy[asyncio]>=2.0.0",  # ORM for database operations
     "alembic>=1.12.0",  # Database migrations
 ]
