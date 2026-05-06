@@ -263,10 +263,10 @@ secrets.json
 logs/
 *.log
 
-# Data and models (customize as needed)
+# Data and ML model artifacts (customize as needed)
 data/raw/
 data/processed/
-models/
+/models/
 weights/
 
 # Notebooks
