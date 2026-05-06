@@ -32,7 +32,7 @@ class UnionSyntaxVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
         self.has_union_syntax = False
 
-    def visit_BinOp(self, node: ast.BinOp) -> None:
+    def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
         """Visit binary operations to detect | in type contexts."""
         if isinstance(node.op, ast.BitOr):
             # Check if this is likely a type annotation context
@@ -46,13 +46,13 @@ class UnionSyntaxVisitor(ast.NodeVisitor):
             self.visit(node.annotation)
         self.generic_visit(node)
 
-    def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
+    def visit_AnnAssign(self, node: ast.AnnAssign) -> None:  # noqa: N802
         """Visit annotated assignments."""
         if node.annotation:
             self.visit(node.annotation)
         self.generic_visit(node)
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: N802
         """Visit function definitions with return annotations."""
         if node.returns:
             self.visit(node.returns)
@@ -65,7 +65,7 @@ class UnionSyntaxVisitor(ast.NodeVisitor):
             self.visit(node.args.kwarg.annotation)
         self.generic_visit(node)
 
-    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:  # noqa: N802
         """Visit async function definitions."""
         self.visit_FunctionDef(node)  # type: ignore[arg-type]
 

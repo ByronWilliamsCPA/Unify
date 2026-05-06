@@ -152,6 +152,6 @@ def setup_logging() -> None:
 
     Automatically applied to all tests to ensure consistent logging setup.
     """
-    from foundry_unify.utils.logging import setup_logging
+    from foundry_unify.utils.structured_logging import setup_logging
 
     setup_logging(level="DEBUG", json_logs=False, include_timestamp=False)

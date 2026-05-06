@@ -23,7 +23,7 @@ path = [
     "noxfile.py",
 ]
 SPDX-License-Identifier = "MIT"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Documentation - CC-BY-4.0
 [[annotations]]
@@ -35,7 +35,7 @@ path = [
     "!LICENSES/*.txt",  # Exclude actual license text files
 ]
 SPDX-License-Identifier = "CC-BY-4.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Configuration files - CC0-1.0 (public domain dedication)
 [[annotations]]
@@ -49,13 +49,11 @@ path = [
     ".pre-commit-config.yaml",
     ".readthedocs.yaml",
     "mkdocs.yml",
-    "poetry.lock",  # Dependency lockfile for reproducible builds
-    "requirements/**/*.txt",  # Generated from poetry export
     "benchmarks/labelmaps/**/*.yaml",  # Benchmark label mappings
     ".zenodo.json",  # Zenodo metadata for DOI
 ]
 SPDX-License-Identifier = "CC0-1.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Data files and models - ODbL-1.0 (Open Database License)
 [[annotations]]
@@ -64,7 +62,7 @@ path = [
     "models/**",
 ]
 SPDX-License-Identifier = "ODbL-1.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Build artifacts and generated files - excluded from licensing
 [[annotations]]
@@ -85,7 +83,7 @@ path = [
 ]
 precedence = "override"
 SPDX-License-Identifier = "CC0-1.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Additional configuration and temporary files - CC0-1.0
 [[annotations]]
@@ -116,7 +114,7 @@ path = [
     "Taskfile.yml",  # Task runner configuration
 ]
 SPDX-License-Identifier = "CC0-1.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"
 
 # Benchmark results and generated metadata files - CC0-1.0
 [[annotations]]
@@ -129,4 +127,4 @@ path = [
     "notebooks/**/*.ipynb",  # Jupyter notebooks (Colab training examples)
 ]
 SPDX-License-Identifier = "CC0-1.0"
-SPDX-FileCopyrightText = "2025 Byron Williams"
+SPDX-FileCopyrightText = "2026 Byron Williams"

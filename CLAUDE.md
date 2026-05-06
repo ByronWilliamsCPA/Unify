@@ -65,6 +65,18 @@ During `cruft update`, this section may be updated. Review changes carefully.
 
 ---
 
+## Model Selection
+
+Use the right model for the task to balance quality and cost:
+
+| Task type | Model | When |
+| --- | --- | --- |
+| Complex reasoning, planning, architecture | Opus 4.7 | Multi-step decisions, ADRs, deep code review |
+| Standard development work | Sonnet 4.6 (default) | Most coding, editing, PR descriptions |
+| Read-only exploration | Haiku 4.5 | File scanning, structure mapping, quick lookups |
+
+---
+
 ## Response-Aware Development (RAD)
 
 ### Assumption Tagging Standards
@@ -147,7 +159,7 @@ Claude MUST adopt a security-first approach in all development:
 
 When working on this project, always suggest appropriate security measures:
 
-- **Dependencies**: Suggest vulnerability scanning (`safety check`, `pip-audit`)
+- **Dependencies**: Suggest vulnerability scanning (`uv run pip-audit`)
 - **APIs**: Suggest authentication, rate limiting, input validation
 - **Data**: Suggest encryption at rest and in transit, access controls
 - **Containers**: Suggest image vulnerability scanning (Trivy)
@@ -330,7 +342,7 @@ END BASELINE DEVELOPMENT STANDARDS
 
 - Test coverage: Minimum 80%
 - All linters must pass: `uv run ruff check .`, `uv run basedpyright src/`
-- Security scans: `uv run bandit -r src`, `uv run safety check`
+- Security scans: `uv run bandit -r src`, `uv run pip-audit`
 
 ---
 
@@ -449,7 +461,7 @@ docs/                       # MkDocs documentation
 **Project-Specific Patterns**:
 
 - Configuration: Use Pydantic Settings with `.env` files
-- Logging: Structured logging via `src/foundry_unify/utils/logging.py`
+- Logging: Structured logging via `src/foundry_unify/utils/structured_logging.py`
 - Error Handling: Custom exceptions in `src/foundry_unify/core/exceptions.py`
 - Correlation: Request tracing via `src/foundry_unify/middleware/correlation.py`
 ### Exception Hierarchy
@@ -537,7 +549,7 @@ async def root():
 Logs automatically include correlation IDs when logging is configured:
 
 ```python
-from foundry_unify.utils.logging import setup_logging, get_logger
+from foundry_unify.utils.structured_logging import setup_logging, get_logger
 
 # Enable correlation in logs
 setup_logging(level="INFO", json_logs=True, include_correlation=True)

@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial project setup and structure
 
-## [0.1.0] - TBD
+## [0.1.0] - 2026-05-05
 
 ### Added
-- Initial project structure with Poetry package management
+- Initial project structure with UV package management
 - Pydantic v2 JSON schema validation
 - Structured logging with structlog and rich console output
-- Pre-commit hooks (Ruff format, Ruff lint, BasedPyright, Bandit, Safety)
+- Pre-commit hooks (Ruff format, Ruff lint, BasedPyright, Bandit)
 - Comprehensive test suite with pytest
 - GitHub Actions CI/CD pipeline with quality gates
 - CLI tool foundation
@@ -29,17 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - References to ByronWilliamsCPA org-level Code of Conduct
 
 ### Infrastructure
-- Poetry dependency management with lock file
+- UV dependency management with lock file
 - pytest test framework with coverage reporting
 - GitHub issue tracking and templates
-- Automated dependency security scanning (Safety, Bandit)
+- Automated dependency security scanning (pip-audit, Bandit)
 - Code quality enforcement (Ruff, BasedPyright)
 - CI/CD pipeline with multiple quality gates
 
 ### Security
 - Bandit security linting
-- Safety dependency vulnerability scanning
+- pip-audit dependency vulnerability scanning
 - Pre-commit hooks for security validation
 
-[Unreleased]: https://github.com/williaby/foundry_unify/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/williaby/foundry_unify/releases/tag/v0.1.0
+[Unreleased]: https://github.com/ByronWilliamsCPA/Unify/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ByronWilliamsCPA/Unify/releases/tag/v0.1.0

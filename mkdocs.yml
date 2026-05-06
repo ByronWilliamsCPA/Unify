@@ -7,11 +7,11 @@ site_description: OCR orchestration and layout analysis service for the Foundry 
 site_author: Byron Williams
 site_url: https://Unify.readthedocs.io
 repo_url: https://github.com/ByronWilliamsCPA/Unify
-repo_name: ByronWilliamsCPA/foundry_unify
+repo_name: ByronWilliamsCPA/Unify
 edit_uri: edit/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2025 Byron Williams
+copyright: Copyright &copy; 2026 Byron Williams
 
 # Theme Configuration
 theme:

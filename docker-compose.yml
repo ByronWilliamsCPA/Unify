@@ -1,7 +1,6 @@
 # Docker Compose configuration for Foundry Unify
 # Development and production-ready setup with common services
 
-version: '3.9'
 
 services:
   # =============================================================================
