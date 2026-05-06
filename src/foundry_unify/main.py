@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 
 from foundry_unify.api import health_router
+from foundry_unify.api.process import router as process_router
 
 app = FastAPI(
     title="Foundry Unify",
@@ -13,3 +14,4 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(process_router)
