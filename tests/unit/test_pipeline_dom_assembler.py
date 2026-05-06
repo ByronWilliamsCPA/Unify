@@ -149,3 +149,67 @@ def test_assemble_element_id_is_unique_per_page() -> None:
     )
     ids = [e.element_id for e in dom.pages[0].elements]
     assert len(ids) == len(set(ids))
+
+
+@pytest.mark.unit
+def test_assemble_success_false_with_complete_status_returns_halted() -> None:
+    """success=False triggers halted path even when processing_status is 'complete'."""
+    raw = DoclingRawResponse(
+        success=False,
+        json_content={"pages": [{"page_no": 1, "items": []}]},
+        page_count=1,
+        ocr_applied=False,
+        processing_time_ms=0.0,
+    )
+    dom = DOMAssembler.assemble(
+        raw_response=raw,
+        document_id="d",
+        trace_id="t",
+        source_track="document",
+        processing_tier="standard",
+        processing_status="complete",
+    )
+    assert dom.processing_status == "halted"
+    assert dom.pages == []
+
+
+@pytest.mark.unit
+def test_assemble_successful_response_with_empty_pages() -> None:
+    """A successful response with zero pages yields page_count=0 and pages=[]."""
+    raw = DoclingRawResponse(
+        success=True,
+        json_content={"pages": []},
+        page_count=0,
+        ocr_applied=True,
+        processing_time_ms=100.0,
+    )
+    dom = DOMAssembler.assemble(
+        raw_response=raw,
+        document_id="d",
+        trace_id="t",
+        source_track="document",
+        processing_tier="standard",
+    )
+    assert dom.processing_status == "complete"
+    assert dom.pages == []
+    assert dom.metadata.page_count == 0
+
+
+@pytest.mark.unit
+def test_assemble_page_no_defaults_to_1_when_absent() -> None:
+    """page_no defaults to 1 when the key is missing from the page dict."""
+    raw = DoclingRawResponse(
+        success=True,
+        json_content={"pages": [{"items": [{"label": "Text", "text": "hello"}]}]},
+        page_count=1,
+        ocr_applied=True,
+        processing_time_ms=100.0,
+    )
+    dom = DOMAssembler.assemble(
+        raw_response=raw,
+        document_id="d",
+        trace_id="t",
+        source_track="document",
+        processing_tier="standard",
+    )
+    assert dom.pages[0].page_number == 1

@@ -59,7 +59,7 @@ class DOMAssembler:
                 ),
             )
 
-        raw_pages: list[dict[str, Any]] = raw_response.json_content.get("pages", [])  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+        raw_pages: list[dict[str, Any]] = raw_response.json_content.get("pages", [])  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
         pages = [DOMAssembler._assemble_page(page_data) for page_data in raw_pages]
 
         return DoclingDOM(
@@ -70,16 +70,16 @@ class DOMAssembler:
             pages=pages,
             metadata=DOMMetadata(
                 processing_tier=processing_tier,
-                layout_confidence=1.0,
+                layout_confidence=1.0,  # early-return above guarantees success=True here
                 ocr_applied=raw_response.ocr_applied,
                 page_count=len(pages),
             ),
         )
 
     @staticmethod
-    def _assemble_page(page_data: dict[str, Any]) -> PageDOM:
-        page_no: int = page_data.get("page_no", 1)  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
-        items: list[dict[str, Any]] = page_data.get("items", [])  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+    def _assemble_page(page_data: dict[str, Any]) -> PageDOM:  # pyright: ignore[reportExplicitAny]
+        page_no: int = page_data.get("page_no", 1)  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+        items: list[dict[str, Any]] = page_data.get("items", [])  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
         elements = [
             DOMAssembler._assemble_element(item, page_no, order)
             for order, item in enumerate(items, start=1)
@@ -92,14 +92,16 @@ class DOMAssembler:
 
     @staticmethod
     def _assemble_element(
-        item: dict[str, Any], page_no: int, reading_order: int
+        item: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+        page_no: int,
+        reading_order: int,
     ) -> ElementDOM:
         return ElementDOM(
             element_id=f"p{page_no}-e{reading_order}",
-            element_type=item.get("label", "Text"),  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
-            text=item.get("text", ""),  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+            element_type=item.get("label", "Text"),  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+            text=item.get("text", ""),  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
             reading_order=reading_order,
-            confidence=float(item.get("confidence", 1.0)),  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+            confidence=float(item.get("confidence", 1.0)),  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
             ocr_engine_provenance="docling-standard",
-            is_parasitic=bool(item.get("is_parasitic", False)),  # pyright: ignore[reportAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
+            is_parasitic=bool(item.get("is_parasitic", False)),  # pyright: ignore[reportAny, reportExplicitAny]  # Docling JSON schema is unversioned; typed access via Any is intentional here.
         )
