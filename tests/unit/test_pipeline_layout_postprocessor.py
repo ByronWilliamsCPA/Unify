@@ -115,3 +115,17 @@ def test_reclassified_element_tagged_with_ki002_flag() -> None:
     )
     result = LayoutPostprocessor(confidence_threshold=0.5).apply(pages)
     assert result[0]["items"][0].get("ki002_reclassified") is True
+
+
+@pytest.mark.unit
+def test_multi_page_reclassification() -> None:
+    """Low-confidence Tables on any page are reclassified, not just page 0."""
+    pages = _make_raw_pages(
+        [
+            [{"label": "Table", "confidence": 0.9, "text": "real table"}],
+            [{"label": "Table", "confidence": 0.2, "text": "misclassified"}],
+        ]
+    )
+    result = LayoutPostprocessor(confidence_threshold=0.5).apply(pages)
+    assert result[0]["items"][0]["label"] == "Table"  # page 0 preserved
+    assert result[1]["items"][0]["label"] == "Text"  # page 1 reclassified
