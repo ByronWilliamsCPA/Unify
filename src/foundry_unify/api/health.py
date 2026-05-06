@@ -20,6 +20,9 @@ import time
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
+from foundry_unify.adapters.docling_serve_client import DoclingServeClient
+from foundry_unify.core.config import settings
+
 router = APIRouter(prefix="/health", tags=["health"])
 
 # Track application start time for uptime calculation
@@ -145,30 +148,25 @@ async def check_external_service() -> ReadinessCheck:
     description="Checks if the application can serve traffic. Used by Kubernetes readiness probe.",
 )
 async def readiness() -> ReadinessStatus:
-    """Kubernetes readiness probe.
-
-    Checks all critical dependencies:
-    - Cache availability (if configured)
-    - External service health (if applicable)
-
-    Returns HTTP 503 if any critical dependency is unavailable.
-    If this fails, Kubernetes will stop sending traffic to this pod.
-    """
+    """Kubernetes readiness probe -- checks docling-serve reachability."""
     checks: dict[str, ReadinessCheck] = {}
 
-    # Run all checks in parallel for better performance
-    # For now, run sequentially - can be optimized with asyncio.gather()
-    # Uncomment if using cache:
-    # checks["cache"] = await check_cache()
+    # Check docling-serve
+    start = time.time()
+    client = DoclingServeClient(base_url=settings.docling_serve_url)
+    reachable = client.health_check()
+    checks["docling_serve"] = ReadinessCheck(
+        name="docling_serve",
+        status=reachable,
+        latency_ms=round((time.time() - start) * 1000, 2),
+        error=None
+        if reachable
+        else f"docling-serve unreachable at {settings.docling_serve_url}",
+    )
 
-    # Uncomment if checking external services:
-    # checks["external_api"] = await check_external_service()
-
-    # Determine overall status
     all_healthy = all(check.status for check in checks.values())
 
     if not all_healthy:
-        # Return 503 if any critical check fails
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={
