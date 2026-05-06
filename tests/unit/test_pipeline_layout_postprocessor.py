@@ -55,6 +55,21 @@ def test_table_at_threshold_is_reclassified() -> None:
 
 
 @pytest.mark.unit
+def test_original_pages_not_mutated() -> None:
+    """apply() must not modify the caller's input list."""
+    pages = _make_raw_pages(
+        [
+            [
+                {"label": "Table", "confidence": 0.2, "text": "col1 col2"},
+            ]
+        ]
+    )
+    original_label = pages[0]["items"][0]["label"]
+    LayoutPostprocessor(confidence_threshold=0.5).apply(pages)
+    assert pages[0]["items"][0]["label"] == original_label
+
+
+@pytest.mark.unit
 def test_non_table_elements_not_affected() -> None:
     pages = _make_raw_pages(
         [
