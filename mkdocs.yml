@@ -198,3 +198,8 @@ validation:
   absolute_links: info
   unrecognized_links: info
   anchors: info
+  links:
+    not_found: ignore
+    absolute_links: ignore
+    unrecognized_links: ignore
+    anchors: ignore

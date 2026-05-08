@@ -10,7 +10,9 @@ FROM python:3.12.10-slim AS builder
 WORKDIR /app
 
 # Install system dependencies for building Python packages.
-# hadolint ignore=DL3008  -- packages tracked by Debian release; pinning per-package versions adds churn without security gain.
+# Pinning per-package versions adds churn without security gain on a curated
+# Debian base image, so DL3008 is suppressed inline.
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
@@ -48,7 +50,9 @@ LABEL org.opencontainers.image.source="https://github.com/ByronWilliamsCPA/Unify
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Install runtime dependencies only.
-# hadolint ignore=DL3008  -- packages tracked by Debian release; pinning per-package versions adds churn without security gain.
+# Pinning per-package versions adds churn without security gain on a curated
+# Debian base image, so DL3008 is suppressed inline.
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
