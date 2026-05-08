@@ -34,6 +34,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "structlog>=23.1.0",
     "rich>=13.5.0",
+    "click>=8.1.0",
     # Cross-Version Compatibility Dependencies
     # =========================================
     # This template targets Python 3.10-3.14. Add version-specific dependencies
@@ -127,6 +128,7 @@ dev = [
     "nox>=2024.10.16",  # Fixed: was 2025 (typo)
     "nox-uv>=0.6.3",    # Fixed: max available version is 0.6.3, not 1.0.0
     "mutmut>=3.3.1",
+    "safety>=3.7.0",  # Secondary scanner; security-analysis.yml passes run-safety: true
     # Google Cloud Assured OSS (optional - uncomment if using Assured OSS)
     "google-auth>=2.0.0",
     # "google-cloud-assured-oss>=0.1.0",  # Package not yet available in PyPI
