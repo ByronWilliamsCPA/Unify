@@ -277,7 +277,7 @@ notebooks/.ipynb_checkpoints/
 results/
 output/
 
-# Template defect report — gitignored reference for cookiecutter team, not for commit
+# Template defect report, gitignored reference for cookiecutter team, not for commit
 docs/template-defects-report.md
 
 # Temporary reference files (anti-compaction strategy)

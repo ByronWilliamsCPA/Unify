@@ -112,7 +112,7 @@ class DocumentMetadata:  # line 1249
     processing_recommendation: ProcessingRecommendation
     quality_assessment: QualityAssessment
     pages: list[PageMetadata]
-    docling_params: DoclingRoutingParams  # line 755 — pre-computed Docling flags
+    docling_params: DoclingRoutingParams  # line 755, pre-computed Docling flags
 
 class DoclingRoutingParams:  # line 755
     pipeline: Literal["standard", "vlm", "legacy"]
