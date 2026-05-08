@@ -43,9 +43,21 @@ path = [
     "*.toml",
     "*.yml",
     "*.yaml",
+    "*.json",  # Repo-root JSON config files (e.g., .infisical.json, .markdownlint.json)
     ".github/**",
     ".gitignore",
     ".gitattributes",
+    ".darglint",
+    ".dockerignore",
+    ".env.example",
+    ".markdownlint.json",
+    ".mutmut_config",
+    ".prettierrc",
+    ".secrets.baseline",
+    ".shellcheckrc",
+    ".yamllint",
+    "Dockerfile",
+    "uv.lock",  # Generated lockfile, no creative content
     ".pre-commit-config.yaml",
     ".readthedocs.yaml",
     "mkdocs.yml",
@@ -98,6 +110,7 @@ path = [
     ".cruft.json",  # Cruft template state
     "validate_workflows.sh",
     "scripts/**/*.sh",  # Shell scripts for automation
+    "scripts/README.md",  # scripts/ directory readme is config-grade
     "tmp_cleanup/**/*.txt",  # Temporary text files
     "tmp_cleanup/.gitkeep",  # Directory placeholder
     "data/.gitkeep",  # Data directory placeholder
