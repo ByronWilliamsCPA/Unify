@@ -8,7 +8,7 @@
 #   - Quality gate enforcement
 #   - Pull request decoration
 #
-# SonarCloud Dashboard: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_foundry_unify
+# SonarCloud Dashboard: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_Unify
 # Documentation: https://docs.sonarsource.com/sonarqube-cloud/
 #
 # Note: This workflow requires SONAR_TOKEN secret to be configured.
@@ -128,23 +128,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}      # SonarCloud authentication
         with:
           args: >
-            -Dsonar.organization=williaby
-            -Dsonar.projectKey=ByronWilliamsCPA_foundry_unify
+            -Dsonar.organization=byronwilliamscpa
+            -Dsonar.projectKey=ByronWilliamsCPA_Unify
             -Dsonar.python.version=3.12
 
       - name: Check Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@master
+        uses: sonarsource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true  # Don't fail workflow, just report status
 
       - name: Quality Gate Summary
         if: always()
         run: |
           echo "### SonarCloud Quality Gate" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View detailed results: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_foundry_unify" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed results: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_Unify" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Metrics analyzed:**" >> $GITHUB_STEP_SUMMARY
           echo "- Code Quality (bugs, code smells, maintainability)" >> $GITHUB_STEP_SUMMARY

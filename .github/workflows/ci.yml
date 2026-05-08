@@ -29,15 +29,15 @@ permissions:
 jobs:
   ci:
     name: CI Pipeline
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@5cce3ccfc200033cc0448b7c5684f40d891f5bbc # main
     with:
       python-version: '3.12'
       coverage-threshold: 80
       source-directory: 'src'
       test-directory: 'tests'
       enable-sonarcloud: true
-      sonarcloud-organization: 'ByronWilliamsCPA'
-      sonarcloud-project-key: 'ByronWilliamsCPA_foundry_unify'
+      sonarcloud-organization: 'byronwilliamscpa'
+      sonarcloud-project-key: 'ByronWilliamsCPA_Unify'
       enable-codecov: true
       run-integration-tests: true
       run-security-tests: true

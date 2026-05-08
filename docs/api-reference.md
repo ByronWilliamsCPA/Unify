@@ -22,8 +22,7 @@ Complete API documentation for Foundry Unify.
 
 ### Logging
 
-::: foundry_unify.utils.logging
+::: foundry_unify.utils.structured_logging
     options:
       show_root_heading: true
       members_order: source
-

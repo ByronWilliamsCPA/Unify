@@ -19,7 +19,7 @@ repos:
   # Fast File Checks (Lightweight, run on every commit)
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b  # v4.5.0  # pragma: allowlist secret
     hooks:
       - id: trailing-whitespace
         stages: [pre-commit]
@@ -75,7 +75,7 @@ repos:
   # Runs on changed files during pre-commit, full scan on pre-push
   # Configuration in pyproject.toml [tool.bandit]
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.10
+    rev: 36fd65054fc8864b4037d0918904f9331512feb5  # 1.7.10  # pragma: allowlist secret
     hooks:
       - id: bandit
         name: Bandit Security Scan (changed files)
@@ -99,7 +99,7 @@ repos:
   # ============================================================================
   # Enforces conventional commit message format for semantic versioning
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.4.0
+    rev: 8dc49e5ea0cab89785161620aa22a26f263661ca  # v3.4.0  # pragma: allowlist secret
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
@@ -109,7 +109,7 @@ repos:
   # pyproject.toml Validation
   # ============================================================================
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.20.2
+    rev: 435e09f5ed9fe57f3444ebfa54c663d0ac8033fe  # v0.20.2  # pragma: allowlist secret
     hooks:
       - id: validate-pyproject
         stages: [pre-commit]
@@ -118,7 +118,7 @@ repos:
   # GitHub Workflow Validation
   # ============================================================================
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.4
+    rev: 37cd56d9d154dfb0648eaee8efc1040512700c47  # 0.29.4  # pragma: allowlist secret
     hooks:
       - id: check-github-workflows
         stages: [pre-commit]
@@ -127,7 +127,7 @@ repos:
   # Ruff Linting and Formatting (Fast, pre-commit stage)
   # ============================================================================
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.0
+    rev: 8d1fdcef5530fb53b66bf6b717bfd2b1ffb0160d  # v0.9.0  # pragma: allowlist secret
     hooks:
       - id: ruff
         stages: [pre-commit]
@@ -196,7 +196,7 @@ repos:
   # Interrogate ensures all Python code has proper docstrings
   # Target: 85% coverage
   - repo: https://github.com/econchick/interrogate
-    rev: 1.7.0
+    rev: a6268877efd41a21197445cc04cbf28f9c6facba  # 1.7.0  # pragma: allowlist secret
     hooks:
       - id: interrogate
         args: ['-v', '-c', 'pyproject.toml', 'src/']
@@ -219,6 +219,36 @@ repos:
         stages: [pre-commit]
         exclude: ^(tests|scripts|benchmarks|tools)/
 
+
+  # ============================================================================
+  # Secret Baseline Detection - detect-secrets (PC-005)
+  # ============================================================================
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 68e8b45440415753fff70a312ece8da92ba85b4a  # v1.5.0  # pragma: allowlist secret
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        stages: [pre-commit]
+
+  # ============================================================================
+  # Em-Dash Detection (PC-011)
+  # ============================================================================
+  # Enforces the no-em-dash writing rule from global CLAUDE.md
+  - repo: local
+    hooks:
+      - id: no-em-dash
+        name: No em-dash
+        entry: bash -c 'grep -Prn "\xe2\x80\x94" "$0" "$@" && exit 1; exit 0'
+        language: system
+        types: [text]
+        exclude: |
+          (?x)^(
+              LICENSES/|
+              \.git/|
+              .*\.png|.*\.jpg|.*\.gif|.*\.pdf|.*\.ico
+          )$
+        stages: [pre-commit]
+
 # Exclude patterns
 exclude: |
   (?x)^(
@@ -236,4 +266,3 @@ exclude: |
       models/|
       .*\.pyc
   )$
-

@@ -1,21 +1,21 @@
 # Foundry Unify
 
 ## Quality & Security
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/foundry_unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/foundry_unify)
-[![codecov](https://codecov.io/gh/ByronWilliamsCPA/foundry_unify/graph/badge.svg)](https://codecov.io/gh/ByronWilliamsCPA/foundry_unify)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![REUSE Compliance](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/reuse.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/reuse.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/Unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/Unify)
+[![codecov](https://codecov.io/gh/ByronWilliamsCPA/Unify/graph/badge.svg)](https://codecov.io/gh/ByronWilliamsCPA/Unify)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![REUSE Compliance](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml)
 
 ## CI/CD Status
-[![CI Pipeline](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/ci.yml?query=branch%3Amain)
-[![Security Analysis](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/security-analysis.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/security-analysis.yml?query=branch%3Amain)
-[![Documentation](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/docs.yml?query=branch%3Amain)
-[![SBOM & Security Scan](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/sbom.yml?query=branch%3Amain)
-[![PR Validation](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/pr-validation.yml)
-[![Release](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/release.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/release.yml)
-[![PyPI Publish](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/publish-pypi.yml)
+[![CI Pipeline](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/ci.yml?query=branch%3Amain)
+[![Security Analysis](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/security-analysis.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/security-analysis.yml?query=branch%3Amain)
+[![Documentation](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/docs.yml?query=branch%3Amain)
+[![SBOM & Security Scan](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/sbom.yml?query=branch%3Amain)
+[![PR Validation](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/pr-validation.yml)
+[![Release](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/release.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/release.yml)
+[![PyPI Publish](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/publish-pypi.yml)
 
 ## Project Info
 
@@ -92,13 +92,15 @@ uv run pre-commit install
 ### Basic Usage
 
 ```python
-# Import and use the package
-from foundry_unify import YourModule
+# Import the package and check the version
+from foundry_unify import __version__
+from foundry_unify.utils.logging import setup_logging, get_logger
 
-# Example: Create an instance and use it
-module = YourModule()
-result = module.process()
-print(result)
+# Set up structured logging
+setup_logging(level="INFO", json_logs=False)
+logger = get_logger(__name__)
+
+logger.info("Starting Foundry Unify", version=__version__)
 ```
 
 ## Supply Chain Security

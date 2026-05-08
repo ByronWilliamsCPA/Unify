@@ -151,8 +151,8 @@ def correlation_context_processor(
         )
 
     Args:
-        logger: The wrapped logger instance.
-        method_name: The name of the log method called.
+        _logger: Wrapped structlog logger (unused, required by processor protocol).
+        _method_name: Log method name (unused, required by processor protocol).
         event_dict: The event dictionary to process.
 
     Returns:

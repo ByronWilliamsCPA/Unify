@@ -11,12 +11,20 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
 license = {text = "MIT"}
-keywords = []
+keywords = ["ocr", "layout-analysis", "rag", "document-processing", "foundry"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
 ]
 
 # Core production dependencies
@@ -26,6 +34,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "structlog>=23.1.0",
     "rich>=13.5.0",
+    "click>=8.1.0",
     # Cross-Version Compatibility Dependencies
     # =========================================
     # This template targets Python 3.10-3.14. Add version-specific dependencies
@@ -73,6 +82,13 @@ dependencies = [
 ]
 
 # Optional dependency groups
+[project.urls]
+Homepage = "https://github.com/ByronWilliamsCPA/Unify"
+Repository = "https://github.com/ByronWilliamsCPA/Unify"
+Documentation = "https://Unify.readthedocs.io"
+Issues = "https://github.com/ByronWilliamsCPA/Unify/issues"
+Changelog = "https://github.com/ByronWilliamsCPA/Unify/blob/main/CHANGELOG.md"
+
 [project.optional-dependencies]
 # Development dependencies
 dev = [
@@ -109,10 +125,10 @@ dev = [
     "interrogate>=1.7.0",
     "jupyter>=1.0.0",
     "ipykernel>=6.25.0",
-    "safety>=3.7.0",
     "nox>=2024.10.16",  # Fixed: was 2025 (typo)
     "nox-uv>=0.6.3",    # Fixed: max available version is 0.6.3, not 1.0.0
     "mutmut>=3.3.1",
+    "safety>=3.7.0",  # Secondary scanner; security-analysis.yml passes run-safety: true
     # Google Cloud Assured OSS (optional - uncomment if using Assured OSS)
     "google-auth>=2.0.0",
     # "google-cloud-assured-oss>=0.1.0",  # Package not yet available in PyPI
@@ -150,7 +166,6 @@ api = [
 supply-chain = [
     "cyclonedx-bom>=4.6.0",          # SBOM generation (CycloneDX format)
     "pip-audit>=2.7.0",              # Python vulnerability scanning
-    "safety>=3.7.0",                 # Additional vulnerability scanning
     "pip-licenses>=4.0.0",           # License compliance checking
     "keyrings.google-artifactregistry-auth>=1.1.0",  # GCP Artifact Registry auth
 ]
@@ -307,6 +322,13 @@ known-first-party = ["foundry_unify"]
 
 # Security middleware uses keyword-only args for a rich configuration surface
 "**/middleware/security.py" = ["PLR0913"]
+
+# AST visitor scripts: ast.NodeVisitor requires PascalCase visit_X methods,
+# which N802 flags. The noqa directives that document this exception are
+# considered "unused" by the project ruff (N rules disabled here) but are
+# required by pre-commit's stricter ruff config; suppress RUF100 here so
+# the directives can stay in place without triggering the unused-noqa check.
+"scripts/check_*.py" = ["RUF100"]
 
 # Test files (relaxed rules for test code)
 "tests/**/*.py" = [
@@ -746,7 +768,6 @@ prerelease_token = "rc"
 
 # Changelog configuration
 [tool.semantic_release.changelog]
-template_dir = "templates"
 changelog_file = "CHANGELOG.md"
 exclude_commit_patterns = [
     "^chore\\(release\\):",

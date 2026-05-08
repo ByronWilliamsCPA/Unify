@@ -96,7 +96,7 @@ class FipsCodeVisitor(ast.NodeVisitor):
         self.issues: list[FipsIssue] = []
         self._in_hashlib_call = False
 
-    def visit_Call(self, node: ast.Call) -> None:
+    def visit_Call(self, node: ast.Call) -> None:  # noqa: N802 -- ast.NodeVisitor requires PascalCase visit methods
         """Visit function calls to detect crypto usage."""
         # Check for hashlib.md5(), hashlib.sha1(), etc.
         if isinstance(node.func, ast.Attribute):
@@ -168,7 +168,7 @@ class FipsCodeVisitor(ast.NodeVisitor):
 
         self.generic_visit(node)
 
-    def visit_Import(self, node: ast.Import) -> None:
+    def visit_Import(self, node: ast.Import) -> None:  # noqa: N802 -- ast.NodeVisitor requires PascalCase visit methods
         """Check for imports of known problematic modules."""
         for alias in node.names:
             module = alias.name.lower()

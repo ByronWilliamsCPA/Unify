@@ -35,14 +35,14 @@ permissions:
 jobs:
   compatibility:
     name: Python Compatibility Matrix
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-compatibility.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-compatibility.yml@5cce3ccfc200033cc0448b7c5684f40d891f5bbc # main
     with:
       python-versions: '["3.10", "3.11", "3.12", "3.13"]'
       operating-systems: '["ubuntu-latest"]'
       include-macos: true
       include-windows: true
       source-directory: 'src'
-      test-command: 'pytest tests/ -v --tb=short -x --ignore=tests/integration --ignore=tests/load -m "not slow and not integration"'
+      test-command: "pytest tests/ -v --tb=short -x --ignore=tests/integration --ignore=tests/load"
       coverage-report: false
       fail-fast: false
       timeout-minutes: 30

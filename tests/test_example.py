@@ -106,7 +106,7 @@ class TestLogging:
         This test verifies that get_logger creates a valid structlog
         logger with expected methods.
         """
-        from foundry_unify.utils.logging import get_logger
+        from foundry_unify.utils.structured_logging import get_logger
 
         logger = get_logger("test_logger")
 
@@ -125,7 +125,7 @@ class TestLogging:
         """
         from unittest.mock import MagicMock
 
-        from foundry_unify.utils.logging import log_performance
+        from foundry_unify.utils.structured_logging import log_performance
 
         mock_logger = MagicMock()
 
@@ -378,7 +378,7 @@ class TestLoggingJSON:
 
         Tests that setup_logging properly configures JSON output.
         """
-        from foundry_unify.utils.logging import setup_logging
+        from foundry_unify.utils.structured_logging import setup_logging
 
         # Configure with JSON logging to cover the JSON renderer branch
         setup_logging(level="INFO", json_logs=True)
@@ -403,7 +403,7 @@ class TestExampleIntegration:
         can be integrated properly.
         """
         from foundry_unify.core.config import Settings
-        from foundry_unify.utils.logging import get_logger
+        from foundry_unify.utils.structured_logging import get_logger
 
         settings = Settings(log_level="INFO")
         logger = get_logger(__name__)
