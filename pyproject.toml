@@ -323,6 +323,13 @@ known-first-party = ["foundry_unify"]
 # Security middleware uses keyword-only args for a rich configuration surface
 "**/middleware/security.py" = ["PLR0913"]
 
+# AST visitor scripts: ast.NodeVisitor requires PascalCase visit_X methods,
+# which N802 flags. The noqa directives that document this exception are
+# considered "unused" by the project ruff (N rules disabled here) but are
+# required by pre-commit's stricter ruff config; suppress RUF100 here so
+# the directives can stay in place without triggering the unused-noqa check.
+"scripts/check_*.py" = ["RUF100"]
+
 # Test files (relaxed rules for test code)
 "tests/**/*.py" = [
     "ANN",    # Type annotations not required in tests

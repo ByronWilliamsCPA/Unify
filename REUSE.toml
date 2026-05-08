@@ -55,15 +55,6 @@ path = [
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "2026 Byron Williams"
 
-# Data files and models - ODbL-1.0 (Open Database License)
-[[annotations]]
-path = [
-    "data/**",
-    "models/**",
-]
-SPDX-License-Identifier = "ODbL-1.0"
-SPDX-FileCopyrightText = "2026 Byron Williams"
-
 # Build artifacts and generated files - excluded from licensing
 [[annotations]]
 path = [
@@ -89,6 +80,8 @@ SPDX-FileCopyrightText = "2026 Byron Williams"
 [[annotations]]
 path = [
     ".claude/settings.local.json",
+    ".claude/settings.local.json.example",  # Example Claude settings template
+    ".claude/**/*.py",  # Claude helper scripts
     ".claude/**/*.json",  # Claude configuration files
     ".claude/**/*.md",  # Claude documentation files
     ".standards/**",  # Baseline standards (auto-updated by cruft)
@@ -102,10 +95,12 @@ path = [
     "image_reference_sets.txt",
     "overrides/**",
     "renovate.json",
+    ".cruft.json",  # Cruft template state
     "validate_workflows.sh",
     "scripts/**/*.sh",  # Shell scripts for automation
     "tmp_cleanup/**/*.txt",  # Temporary text files
     "tmp_cleanup/.gitkeep",  # Directory placeholder
+    "data/.gitkeep",  # Data directory placeholder
     "sonar-project.properties",  # SonarCloud/SonarQube configuration
     "codemeta.json",  # CodeMeta software metadata
     ".zenodo.json",  # Zenodo DOI metadata
