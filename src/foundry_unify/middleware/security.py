@@ -20,6 +20,7 @@ Usage:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import time
 from collections import defaultdict
@@ -96,7 +97,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         )
 
         # Remove server identification (OWASP A09)
-        response.headers.pop("Server", None)
+        # Starlette's MutableHeaders does not implement pop(); use del with a
+        # presence check instead.
+        if "Server" in response.headers:
+            del response.headers["Server"]
 
         return response
 
@@ -136,6 +140,37 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.cleanup_interval = cleanup_interval
         self.requests: dict[str, list[float]] = defaultdict(list)
         self._last_cleanup = time.time()
+        # #CRITICAL: Concurrency: shared dict mutated under async load; lock
+        # the read-modify-write region to prevent TOCTOU bypass of the limit.
+        # #VERIFY: concurrent integration test asserts no burst > requests_per_minute
+        self._lock = asyncio.Lock()
+
+    @staticmethod
+    def _resolve_client_ip(request: Request) -> str:
+        """Resolve client IP, honoring trusted proxy headers when present.
+
+        When the app sits behind a reverse proxy (nginx, ALB, Traefik), the
+        TCP peer is the proxy itself, so request.client.host would map every
+        client to the same bucket. Prefer X-Forwarded-For (first hop) and
+        X-Real-IP, falling back to the peer address.
+
+        Args:
+            request: Incoming Starlette request.
+
+        Returns:
+            Best-effort client IP string, or "unknown" when unavailable.
+        """
+        # #ASSUME: Security: deployment terminates X-Forwarded-For at a trusted
+        # edge proxy; otherwise this header is attacker-controlled. Operators
+        # SHOULD also configure uvicorn --proxy-headers and --forwarded-allow-ips.
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            # First entry is the original client; later entries are intermediate proxies
+            return forwarded_for.split(",", 1)[0].strip()
+        real_ip = request.headers.get("X-Real-IP")
+        if real_ip:
+            return real_ip.strip()
+        return request.client.host if request.client else "unknown"
 
     def _cleanup_stale_entries(self, current_time: float) -> None:
         """Remove stale IP entries to prevent memory leaks.
@@ -185,53 +220,64 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next) -> Response:
         """Apply rate limiting per IP address."""
-        if request.client is None:
+        client_ip = self._resolve_client_ip(request)
+        if client_ip == "unknown":
             logger.warning(
-                "request.client is None - cannot determine client IP for rate limiting. "
-                "Using 'unknown' as fallback. This may occur during testing or with certain proxy configurations."
+                "Could not determine client IP for rate limiting; "
+                "rate limit check will use the 'unknown' bucket. "
+                "Verify proxy headers if this is unexpected."
             )
-        client_ip = request.client.host if request.client else "unknown"
         current_time = time.time()
 
-        # Periodic cleanup to prevent memory leaks
-        self._cleanup_stale_entries(current_time)
+        # Hold the lock across check-then-update to prevent TOCTOU bypass
+        async with self._lock:
+            # Periodic cleanup to prevent memory leaks
+            self._cleanup_stale_entries(current_time)
 
-        # Clean up old entries for current IP (older than 1 minute)
-        self.requests[client_ip] = [
-            req_time
-            for req_time in self.requests[client_ip]
-            if current_time - req_time < 60
-        ]
+            # Clean up old entries for current IP (older than 1 minute)
+            self.requests[client_ip] = [
+                req_time
+                for req_time in self.requests[client_ip]
+                if current_time - req_time < 60
+            ]
 
-        # Check rate limit
-        if len(self.requests[client_ip]) >= self.requests_per_minute:
-            return JSONResponse(
-                status_code=429,
-                content={
-                    "error": "Too Many Requests",
-                    "message": f"Rate limit exceeded: {self.requests_per_minute} requests per minute",
-                    "retry_after": 60,
-                },
-                headers={"Retry-After": "60"},
+            # Check rate limit
+            if len(self.requests[client_ip]) >= self.requests_per_minute:
+                return JSONResponse(
+                    status_code=429,
+                    content={
+                        "error": "Too Many Requests",
+                        "message": (
+                            f"Rate limit exceeded: "
+                            f"{self.requests_per_minute} requests per minute"
+                        ),
+                        "retry_after": 60,
+                    },
+                    headers={"Retry-After": "60"},
+                )
+
+            # Check burst limit
+            recent_requests = sum(
+                1
+                for req_time in self.requests[client_ip]
+                if current_time - req_time < 1
             )
+            if recent_requests >= self.burst_size:
+                return JSONResponse(
+                    status_code=429,
+                    content={
+                        "error": "Too Many Requests",
+                        "message": (
+                            f"Burst limit exceeded: "
+                            f"{self.burst_size} requests per second"
+                        ),
+                        "retry_after": 1,
+                    },
+                    headers={"Retry-After": "1"},
+                )
 
-        # Check burst limit
-        recent_requests = sum(
-            1 for req_time in self.requests[client_ip] if current_time - req_time < 1
-        )
-        if recent_requests >= self.burst_size:
-            return JSONResponse(
-                status_code=429,
-                content={
-                    "error": "Too Many Requests",
-                    "message": f"Burst limit exceeded: {self.burst_size} requests per second",
-                    "retry_after": 1,
-                },
-                headers={"Retry-After": "1"},
-            )
-
-        # Record request
-        self.requests[client_ip].append(current_time)
+            # Record request inside the same critical section so the limit is exact
+            self.requests[client_ip].append(current_time)
 
         return await call_next(request)
 
@@ -399,21 +445,45 @@ class SSRFPreventionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         """Check for SSRF patterns in request.
 
-        Validates query parameters, form data, and JSON body for potential
-        SSRF attempts targeting internal resources.
+        Validates query parameters and selected risky headers for potential
+        SSRF attempts targeting internal resources. Body inspection is
+        intentionally NOT performed here because consuming the body in a
+        BaseHTTPMiddleware breaks downstream handlers; SSRF validation for
+        request body fields belongs in the route's Pydantic model
+        (custom validator) so it can be exercised without buffering bytes.
         """
         # Check query parameters for URLs
         for param, value in request.query_params.items():
-            if isinstance(value, str) and ("://" in value or value.startswith("//")):
-                if self._is_blocked_url(value):
-                    return JSONResponse(
-                        status_code=400,
-                        content={
-                            "error": "Bad Request",
-                            "message": "Request blocked: potential SSRF attempt",
-                            "detail": f"Blocked URL detected in parameter: {param}",
-                        },
-                    )
+            if (
+                isinstance(value, str)
+                and ("://" in value or value.startswith("//"))
+                and self._is_blocked_url(value)
+            ):
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "error": "Bad Request",
+                        "message": "Request blocked: potential SSRF attempt",
+                        "detail": f"Blocked URL detected in parameter: {param}",
+                    },
+                )
+
+        # Check risky headers that can carry attacker-supplied URLs
+        for header_name in ("Referer", "Location", "X-Forwarded-Host"):
+            header_value = request.headers.get(header_name)
+            if (
+                header_value
+                and ("://" in header_value or header_value.startswith("//"))
+                and self._is_blocked_url(header_value)
+            ):
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "error": "Bad Request",
+                        "message": "Request blocked: potential SSRF attempt",
+                        "detail": (f"Blocked URL detected in header: {header_name}"),
+                    },
+                )
 
         return await call_next(request)
 
@@ -427,6 +497,8 @@ def add_security_middleware(
     allowed_origins: list[str] | None = None,
     allowed_hosts: list[str] | None = None,
     rate_limit_rpm: int = 60,
+    allow_credentials: bool = False,
+    allow_headers: list[str] | None = None,
 ) -> None:
     """Add all security middleware to FastAPI application.
 
@@ -440,6 +512,12 @@ def add_security_middleware(
         allowed_origins: CORS allowed origins (default: none)
         allowed_hosts: Trusted host names (default: all)
         rate_limit_rpm: Rate limit requests per minute
+        allow_credentials: Permit cookies/auth in CORS responses. Defaults to
+            False; only enable with a specific origin list, never with
+            wildcard origins.
+        allow_headers: CORS allowed request headers. Defaults to a small
+            allowlist (Content-Type, Authorization, X-Correlation-ID,
+            X-Request-ID) instead of the wildcard ["*"].
 
     Example:
         >>> from fastapi import FastAPI
@@ -464,12 +542,21 @@ def add_security_middleware(
         )
 
     # CORS configuration (OWASP A05)
+    # #CRITICAL: Security: never combine wildcard origins with credentials;
+    # callers must opt-in to allow_credentials with a specific origin list.
+    # #VERIFY: route test asserts Access-Control-Allow-Credentials matches policy
+    cors_allow_headers = allow_headers or [
+        "Content-Type",
+        "Authorization",
+        "X-Correlation-ID",
+        "X-Request-ID",
+    ]
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins or [],
-        allow_credentials=True,
+        allow_credentials=allow_credentials,
         allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
-        allow_headers=["*"],
+        allow_headers=cors_allow_headers,
         expose_headers=["X-Request-ID"],
         max_age=3600,
     )
