@@ -1,5 +1,5 @@
 {
-  "template": "/home/byron/dev/cookiecutter-python-template",
+  "template": "https://github.com/ByronWilliamsCPA/cookiecutter-python-template",
   "commit": "2a01a6e7edd1d472224eb72ac171040327b146a8",
   "checkout": null,
   "context": {

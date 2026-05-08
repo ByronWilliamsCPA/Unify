@@ -8,7 +8,7 @@
 #   - Quality gate enforcement
 #   - Pull request decoration
 #
-# SonarCloud Dashboard: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_foundry_unify
+# SonarCloud Dashboard: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_Unify
 # Documentation: https://docs.sonarsource.com/sonarqube-cloud/
 #
 # Note: This workflow requires SONAR_TOKEN secret to be configured.
@@ -143,7 +143,7 @@ jobs:
         run: |
           echo "### SonarCloud Quality Gate" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View detailed results: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_foundry_unify" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed results: https://sonarcloud.io/dashboard?id=ByronWilliamsCPA_Unify" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Metrics analyzed:**" >> $GITHUB_STEP_SUMMARY
           echo "- Code Quality (bugs, code smells, maintainability)" >> $GITHUB_STEP_SUMMARY
