@@ -26,6 +26,12 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "structlog>=23.1.0",
     "rich>=13.5.0",
+    "httpx>=0.27.0",
+    "google-cloud-storage>=2.10.0",
+    "fastapi>=0.120.1",
+    "uvicorn[standard]>=0.23.0",
+    "python-multipart>=0.0.18",
+    "starlette>=0.49.1",
     # Cross-Version Compatibility Dependencies
     # =========================================
     # This template targets Python 3.10-3.14. Add version-specific dependencies
@@ -130,12 +136,8 @@ ml = [
 ]
 
 
-# API framework dependencies
+# API framework dependencies (fastapi/uvicorn/python-multipart/starlette are in core deps)
 api = [
-    "fastapi>=0.120.1",
-    "uvicorn[standard]>=0.23.0",
-    "python-multipart>=0.0.18",
-    "starlette>=0.49.1",
     "sqlalchemy[asyncio]>=2.0.0",  # ORM for database operations
     "alembic>=1.12.0",  # Database migrations
 ]
@@ -308,6 +310,9 @@ known-first-party = ["foundry_unify"]
 # Security middleware uses keyword-only args for a rich configuration surface
 "**/middleware/security.py" = ["PLR0913"]
 
+# DOMAssembler.assemble has 6 required args matching the pipeline contract spec
+"**/pipeline/dom_assembler.py" = ["PLR0913"]
+
 # Test files (relaxed rules for test code)
 "tests/**/*.py" = [
     "ANN",    # Type annotations not required in tests
@@ -334,6 +339,7 @@ known-first-party = ["foundry_unify"]
 # Scripts (utility code - not packages)
 "scripts/**/*.py" = [
     "ANN", "D", "T20", "TRY", "PTH", "PLR",
+    "N802",   # AST visitor methods must follow ast.NodeVisitor naming convention
     "INP",    # Scripts are not packages
     "EM",     # Utility scripts don't need perfect error messages
     "T10",    # Debugger allowed during script development
@@ -387,6 +393,11 @@ known-first-party = ["foundry_unify"]
     "INP",    # Not packages
 ]
 
+# GCS adapter - lazy google-cloud-storage import to avoid hard SDK dependency at import time
+"src/*/adapters/gcs_client.py" = [
+    "PLC0415", # Lazy import of google.cloud.storage avoids hard dependency at module load
+]
+
 # API health checks - Example code with template patterns
 "src/*/api/health.py" = [
     "ERA001",  # Commented code shows implementation examples
@@ -413,6 +424,7 @@ known-first-party = ["foundry_unify"]
 
 # Logging utilities - Structlog processor interface
 "src/*/utils/logging.py" = [
+    "A005",    # Intentional: this module wraps stdlib logging (same name by design)
     "ARG001",  # Unused args required by structlog processor interface
     "TC002",   # Processor needs to be runtime-available
 ]

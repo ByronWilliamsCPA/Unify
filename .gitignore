@@ -263,10 +263,10 @@ secrets.json
 logs/
 *.log
 
-# Data and models (customize as needed)
+# Data and ML model artifacts (customize as needed)
 data/raw/
 data/processed/
-models/
+/models/
 weights/
 
 # Notebooks
@@ -282,6 +282,7 @@ output/
 tmp_cleanup/.tmp-*
 !tmp_cleanup/.gitkeep
 
-# SonarCloud
+# SonarCloud / SonarLint
 .scannerwork/
 .sonar/
+.sonarlint/

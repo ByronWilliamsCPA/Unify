@@ -14,11 +14,15 @@ Implements:
 
 from __future__ import annotations
 
+import asyncio
 import sys
 import time
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
+
+from foundry_unify.adapters.docling_serve_client import DoclingServeClient
+from foundry_unify.core.config import settings
 
 router = APIRouter(prefix="/health", tags=["health"])
 
@@ -74,66 +78,6 @@ async def liveness() -> HealthStatus:
     )
 
 
-async def check_cache() -> ReadinessCheck:
-    """Check Redis/cache connectivity.
-
-    Returns:
-        ReadinessCheck with cache status and latency
-    """
-    start = time.time()
-    try:
-        # Example Redis check - adjust based on your cache implementation
-        # from foundry_unify.core.cache import redis_client
-        # await redis_client.ping()
-
-        # Placeholder - replace with actual cache check
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="cache",
-            status=True,
-            latency_ms=round(latency_ms, 2),
-        )
-    except Exception as e:
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="cache",
-            status=False,
-            latency_ms=round(latency_ms, 2),
-            error=str(e),
-        )
-
-
-async def check_external_service() -> ReadinessCheck:
-    """Check external API/service connectivity.
-
-    Returns:
-        ReadinessCheck with external service status
-    """
-    start = time.time()
-    try:
-        # Example external service check
-        # import httpx
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get("https://api.example.com/health", timeout=2.0)
-        #     response.raise_for_status()
-
-        # Placeholder - replace with actual external service check
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="external_api",
-            status=True,
-            latency_ms=round(latency_ms, 2),
-        )
-    except Exception as e:
-        latency_ms = (time.time() - start) * 1000
-        return ReadinessCheck(
-            name="external_api",
-            status=False,
-            latency_ms=round(latency_ms, 2),
-            error=str(e),
-        )
-
-
 @router.get(
     "/ready",
     response_model=ReadinessStatus,
@@ -145,30 +89,26 @@ async def check_external_service() -> ReadinessCheck:
     description="Checks if the application can serve traffic. Used by Kubernetes readiness probe.",
 )
 async def readiness() -> ReadinessStatus:
-    """Kubernetes readiness probe.
-
-    Checks all critical dependencies:
-    - Cache availability (if configured)
-    - External service health (if applicable)
-
-    Returns HTTP 503 if any critical dependency is unavailable.
-    If this fails, Kubernetes will stop sending traffic to this pod.
-    """
+    """Kubernetes readiness probe -- checks docling-serve reachability."""
     checks: dict[str, ReadinessCheck] = {}
 
-    # Run all checks in parallel for better performance
-    # For now, run sequentially - can be optimized with asyncio.gather()
-    # Uncomment if using cache:
-    # checks["cache"] = await check_cache()
+    # Check docling-serve
+    start = time.time()
+    # health_check() uses a hard 5-second timeout internally; docling_serve_timeout_seconds does not apply here
+    with DoclingServeClient(base_url=settings.docling_serve_url) as docling_client:
+        reachable = await asyncio.to_thread(docling_client.health_check)
+    checks["docling_serve"] = ReadinessCheck(
+        name="docling_serve",
+        status=reachable,
+        latency_ms=round((time.time() - start) * 1000, 2),
+        error=None
+        if reachable
+        else f"docling-serve unreachable at {settings.docling_serve_url}",
+    )
 
-    # Uncomment if checking external services:
-    # checks["external_api"] = await check_external_service()
-
-    # Determine overall status
     all_healthy = all(check.status for check in checks.values())
 
     if not all_healthy:
-        # Return 503 if any critical check fails
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={
@@ -225,54 +165,3 @@ async def health() -> HealthStatus:
     that expect a /health endpoint.
     """
     return await liveness()
-
-
-# =============================================================================
-# Kubernetes Probe Configuration Examples
-# =============================================================================
-"""
-Add to your Kubernetes Deployment YAML:
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: foundry_unify
-spec:
-  template:
-    spec:
-      containers:
-      - name: app
-        image: foundry_unify:latest
-        ports:
-        - containerPort: 8000
-
-        # Liveness probe - restart if fails
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
-
-        # Readiness probe - stop traffic if fails
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-
-        # Startup probe - delay other probes during startup
-        startupProbe:
-          httpGet:
-            path: /health/startup
-            port: 8000
-          initialDelaySeconds: 0
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 30  # 30 * 5s = 150s max startup time
-"""
