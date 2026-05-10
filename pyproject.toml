@@ -350,6 +350,7 @@ known-first-party = ["foundry_unify"]
     "S311",   # random - non-crypto random in scripts is fine
     "S603",   # subprocess_without_shell_equals_true - scripts validate inputs
     "S607",   # start_process_with_partial_path - scripts use PATH
+    "N802",   # AST visitor protocol requires visit_Call/visit_Import naming
 ]
 
 # Benchmarks (performance testing)
@@ -415,6 +416,7 @@ known-first-party = ["foundry_unify"]
 "src/*/utils/logging.py" = [
     "ARG001",  # Unused args required by structlog processor interface
     "TC002",   # Processor needs to be runtime-available
+    "A005",    # Module name predates this rule; PR #2 migrates to structured_logging.py
 ]
 
 # Quality gate script - Intentional URL handling

@@ -96,7 +96,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         )
 
         # Remove server identification (OWASP A09)
-        response.headers.pop("Server", None)
+        if "server" in response.headers:
+            del response.headers["server"]
 
         return response
 
