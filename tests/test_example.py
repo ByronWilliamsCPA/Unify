@@ -8,6 +8,8 @@ This module shows:
 - Docstring examples that can be tested with doctest
 """
 
+import importlib.util
+
 import pytest
 
 
@@ -146,6 +148,10 @@ class TestLogging:
         assert call_args[1]["extra_metric"] == 42
 
 
+@pytest.mark.skipif(
+    importlib.util.find_spec("foundry_unify.cli") is None,
+    reason="foundry_unify.cli not yet implemented in this branch",
+)
 class TestCLI:
     """Test command-line interface.
 

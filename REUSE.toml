@@ -82,6 +82,10 @@ path = [
     ".ruff_cache/**",
     "*.pyc",
     "*.pyo",
+    ".worktrees/**",  # Git worktree checkouts (temporary, not project source)
+    "htmlcov/**",  # Coverage HTML reports (generated)
+    ".coverage",  # Coverage data file (generated)
+    "coverage.xml",  # Coverage XML report (generated)
 ]
 precedence = "override"
 SPDX-License-Identifier = "CC0-1.0"
@@ -93,6 +97,8 @@ path = [
     ".claude/settings.local.json",
     ".claude/**/*.json",  # Claude configuration files
     ".claude/**/*.md",  # Claude documentation files
+    ".claude/**/*.py",  # Claude skill scripts
+    ".claude/**/*.example",  # Claude example config files
     ".standards/**",  # Baseline standards (auto-updated by cruft)
     ".clusterfuzzlite/**",
     ".sonarlint/**",  # SonarLint IDE configuration
@@ -106,6 +112,7 @@ path = [
     "renovate.json",
     "validate_workflows.sh",
     "scripts/**/*.sh",  # Shell scripts for automation
+    "scripts/**/*.md",  # Script documentation
     "tmp_cleanup/**/*.txt",  # Temporary text files
     "tmp_cleanup/.gitkeep",  # Directory placeholder
     "sonar-project.properties",  # SonarCloud/SonarQube configuration
@@ -114,6 +121,18 @@ path = [
     "Makefile",  # Build automation
     "justfile",  # Just command runner
     "Taskfile.yml",  # Task runner configuration
+    "Dockerfile",  # Container definition
+    ".dockerignore",  # Docker build context exclusions
+    "uv.lock",  # UV dependency lockfile (generated)
+    ".env.example",  # Example environment configuration
+    ".cruft.json",  # Cruft template sync metadata
+    ".darglint",  # Darglint docstring linter configuration
+    ".infisical.json",  # Infisical secrets manager configuration
+    ".markdownlint.json",  # Markdownlint configuration
+    ".mutmut_config",  # Mutmut mutation testing configuration
+    ".prettierrc",  # Prettier formatter configuration
+    ".shellcheckrc",  # ShellCheck linter configuration
+    ".yamllint",  # Yamllint configuration
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "2025 Byron Williams"
