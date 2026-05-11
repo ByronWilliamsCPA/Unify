@@ -123,6 +123,7 @@ path = [
     "Taskfile.yml",  # Task runner configuration
     "Dockerfile",  # Container definition
     ".dockerignore",  # Docker build context exclusions
+    ".trivyignore",  # Trivy vulnerability scanner suppression list
     "uv.lock",  # UV dependency lockfile (generated)
     ".env.example",  # Example environment configuration
     ".cruft.json",  # Cruft template sync metadata
