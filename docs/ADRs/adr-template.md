@@ -1,12 +1,12 @@
 ---
-schema_type: adr
+schema_type: planning
 title: "ADR-NNN: Short Descriptive Title of the Decision"
 description: "Brief one-sentence description of what decision this ADR documents."
 tags:
   - architecture
   - decisions
   - adr
-status: proposed
+status: draft
 owner: core-maintainer
 component: Strategy
 source: "ADR template"
@@ -250,8 +250,8 @@ How will we validate that this decision achieved its goals?
 
 ### Related ADRs
 
-- [ADR-001: Previous Decision](0001-previous-decision.md) - Related context
-- [ADR-005: Future Decision](0005-future-decision.md) - Builds on this ADR
+- ADR-001: Previous Decision (`0001-previous-decision.md`) - Related context
+- ADR-005: Future Decision (`0005-future-decision.md`) - Builds on this ADR
 
 ### External References
 
@@ -261,9 +261,9 @@ How will we validate that this decision achieved its goals?
 
 ### Implementation References
 
-- [Implementation File](../../src/component.py)
-- [Test Coverage](../../tests/test_component.py)
-- [Configuration](../../config.yaml)
+- Implementation File: `../../src/component.py`
+- Test Coverage: `../../tests/test_component.py`
+- Configuration: `../../config.yaml`
 
 ## Questions & Discussion
 

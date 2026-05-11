@@ -155,7 +155,8 @@ secrets*.json
 # Project-Specific
 # =============================================================================
 # Add project-specific files to ignore
-README.md
+# README.md excluded from .dockerignore: pyproject.toml declares readme = "README.md"
+# and hatchling requires it at build time inside the container.
 LICENSE
 CHANGELOG.md
 CONTRIBUTING.md

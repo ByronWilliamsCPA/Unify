@@ -1,0 +1,39 @@
+# Trivy vulnerability suppressions for Foundry Unify
+#
+# All entries here are OS-level CVEs in the python:3.12-slim (Debian Trixie)
+# base image. No fixed versions are available from Debian at time of
+# documentation. Application code is not affected by any of these.
+#
+# Policy: each CVE is documented in docs/known-vulnerabilities.md.
+# Review quarterly or when a fixed package version becomes available.
+# Last reviewed: 2026-05-10
+
+# libcap2 -- privilege escalation TOCTOU race (no fix available)
+CVE-2026-4878
+
+# libgnutls30t64 -- DoS via DTLS zero-length record (no fix available)
+CVE-2026-33845
+
+# libgnutls30t64 -- DoS via heap buffer overflow (no fix available)
+CVE-2026-33846
+
+# libgnutls30t64 -- policy bypass due to case-sensitive comparison (no fix available)
+CVE-2026-3833
+
+# libgnutls30t64 -- authentication bypass via NUL character (no fix available)
+CVE-2026-42010
+
+# libgnutls30t64 -- security bypass due to incorrect name handling (no fix available)
+CVE-2026-42011
+
+# libncursesw6 / libtinfo6 / ncurses-base -- buffer overflow (no fix available)
+CVE-2025-69720
+
+# libnghttp2-14 -- DoS via malformed HTTP/2 frames (no fix available)
+CVE-2026-27135
+
+# libssh2-1t64 -- integer overflow via large username/password (no fix available)
+CVE-2026-7598
+
+# libsystemd0 / libudev1 -- arbitrary code execution or DoS (no fix available)
+CVE-2026-29111
