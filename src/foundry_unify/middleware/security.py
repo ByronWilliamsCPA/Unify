@@ -95,8 +95,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "geolocation=(), microphone=(), camera=(), payment=()"
         )
 
-        # Remove server identification (OWASP A09)
-        response.headers.pop("Server", None)
+        # Remove server identification (OWASP A09).
+        # Starlette's MutableHeaders has no .pop(); compare case-insensitively
+        # via the in operator (it lowercases keys internally) before deleting.
+        if "server" in response.headers:
+            del response.headers["server"]
 
         return response
 
