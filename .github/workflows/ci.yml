@@ -52,6 +52,11 @@ jobs:
     needs: [ci]
     if: always()
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
       - name: Check CI results
         run: |
           if [ "${{ needs.ci.result }}" != "success" ]; then
