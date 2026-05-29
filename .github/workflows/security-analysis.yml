@@ -41,7 +41,6 @@ jobs:
       run-codeql: true
       run-dependency-review: true
       run-bandit: true
-      run-safety: true
       run-osv: true
 
   security-gate-success:

@@ -42,7 +42,54 @@ When working on this project, if you discover any issue that originates from the
 
 <!-- Add your feedback below this line -->
 
-_No feedback items yet. Add issues as they are discovered._
+### Phantom CLI tests reference a non-existent `cli` module
+
+- **Priority**: High
+- **Category**: Tooling / CI/CD
+- **Discovered**: 2026-05-28
+
+**Issue**: `tests/test_example.py` ships a `TestCLI` class (12 tests) that imports
+`foundry_unify.cli`, but the template generates no `cli` module and no
+`[project.scripts]` console entry point. Every CLI test fails with
+`ModuleNotFoundError: No module named '<package>.cli'`, and the dead code drags
+total coverage well below the enforced 80% gate.
+
+**Context**: Discovered while bringing CI to green. The org reusable CI workflow
+never ran tests (it was failing at `startup_failure` for unrelated input-schema
+reasons), so the broken CLI tests had been masked since project creation.
+
+**Suggested Fix**: Either (a) gate the CLI scaffolding behind a cookiecutter
+option (`include_cli`) that generates both the `cli` module and its tests
+together, or (b) drop the CLI tests from the default `test_example.py` so
+service-style projects without a CLI start green.
+
+**Affected Files**: `{{cookiecutter.package_name}}/tests/test_example.py`,
+`pyproject.toml` (`[project.scripts]`)
+
+### Initial reusable-workflow callers pass inputs the org workflows no longer accept
+
+- **Priority**: Critical
+- **Category**: CI/CD
+- **Discovered**: 2026-05-28
+
+**Issue**: The generated `.github/workflows/ci.yml` passes
+`enable-sonarcloud`, `sonarcloud-organization`, `sonarcloud-project-key`,
+`enable-codecov`, and a `secrets:` block to `python-ci.yml@main`, and
+`security-analysis.yml` passes `run-safety`. The org reusable workflows removed
+these inputs/secrets, so every run fails at `startup_failure` (workflow-call
+validation) on a freshly generated project.
+
+**Context**: All CI was red from project creation; the failure mode (no logs,
+parse-time rejection) made it look like an infra outage rather than a stale
+caller contract.
+
+**Suggested Fix**: Pin the caller workflows to the same org-workflow SHA the
+template was validated against, and remove inputs/secrets the current org
+workflows do not declare. Add a template CI smoke test that calls the org
+workflows to catch contract drift.
+
+**Affected Files**: `.github/workflows/ci.yml`,
+`.github/workflows/security-analysis.yml`
 
 ---
 
