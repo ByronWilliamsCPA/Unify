@@ -43,7 +43,10 @@ jobs:
       include-macos: true
       include-windows: true
       source-directory: 'src'
-      test-command: 'pytest tests/ -v --tb=short -x --ignore=tests/integration --ignore=tests/load -m "not slow and not integration"'
+      # No -m marker expression: the embedded quotes do not survive the org
+      # workflow's shell expansion (pytest then reads "slow" as a path). The
+      # integration/load suites are excluded by path instead.
+      test-command: 'pytest tests/ -v --tb=short -x --ignore=tests/integration --ignore=tests/load'
       coverage-report: false
       fail-fast: false
       timeout-minutes: 30

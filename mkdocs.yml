@@ -185,3 +185,12 @@ nav:
 # strict mode disabled to allow links to repo root files
 # These files are valid but outside docs/ directory
 strict: false
+
+# Exclude template/scaffolding docs from the build. These contain intentional
+# placeholder links (e.g. relative/path/to/module.py, 0001-previous-decision.md)
+# that do not resolve and would abort the org docs workflow's --strict build.
+exclude_docs: |
+  ADRs/adr-template.md
+  planning/project-plan-template.md
+  planning/adr/README.md
+  superpowers/
