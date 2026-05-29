@@ -155,7 +155,9 @@ secrets*.json
 # Project-Specific
 # =============================================================================
 # Add project-specific files to ignore
-README.md
+# NOTE: README.md is intentionally NOT ignored. pyproject.toml declares
+# readme = "README.md", so the hatchling build backend requires it in the
+# build context, otherwise `uv sync` fails with "Readme file does not exist".
 LICENSE
 CHANGELOG.md
 CONTRIBUTING.md

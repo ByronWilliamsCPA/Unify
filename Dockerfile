@@ -10,6 +10,9 @@ FROM python:3.12-slim AS builder
 WORKDIR /app
 
 # Install system dependencies for building Python packages
+# hadolint ignore=DL3008
+# DL3008 (pin apt versions) intentionally skipped: Debian drops old package
+# versions from its repos, so pinning breaks reproducible builds over time.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
@@ -47,6 +50,9 @@ LABEL org.opencontainers.image.source="https://github.com/ByronWilliamsCPA/Unify
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Install runtime dependencies only
+# hadolint ignore=DL3008
+# DL3008 (pin apt versions) intentionally skipped: Debian drops old package
+# versions from its repos, so pinning breaks reproducible builds over time.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
