@@ -31,6 +31,7 @@ jobs:
     name: CI Pipeline
     uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
       coverage-threshold: 80
       source-directory: 'src'

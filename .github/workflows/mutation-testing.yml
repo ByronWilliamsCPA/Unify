@@ -42,6 +42,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     uses: ByronWilliamsCPA/.github/.github/workflows/python-mutation.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
       source-directory: 'src'
       test-directory: 'tests'

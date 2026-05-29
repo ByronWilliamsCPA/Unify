@@ -34,6 +34,7 @@ jobs:
     name: Security Scan
     uses: ByronWilliamsCPA/.github/.github/workflows/python-security-analysis.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       source-directory: 'src'
       python-version: '3.12'
       fail-on-high: true
