@@ -84,7 +84,7 @@ async def check_cache() -> ReadinessCheck:
     """Check Redis/cache connectivity.
 
     Returns:
-        ReadinessCheck with cache status and latency
+        ReadinessCheck: Check result with cache status and latency.
     """
     start = time.time()
     try:
@@ -113,7 +113,7 @@ async def check_external_service() -> ReadinessCheck:
     """Check external API/service connectivity.
 
     Returns:
-        ReadinessCheck with external service status
+        ReadinessCheck: Check result with external service status.
     """
     start = time.time()
     try:
