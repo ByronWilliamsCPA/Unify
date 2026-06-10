@@ -141,7 +141,9 @@ async def check_external_service() -> ReadinessCheck:
 
 
 # Registry of readiness checks evaluated by the /ready endpoint.
-# Register dependency probes at application startup, e.g.:
+# #ASSUME: external-resources: probes are registered at application startup
+# and an empty registry means the service reports ready unconditionally.
+# #VERIFY: register every critical dependency probe before serving traffic:
 #   READINESS_CHECKS["cache"] = check_cache
 #   READINESS_CHECKS["external_api"] = check_external_service
 READINESS_CHECKS: dict[str, Callable[[], Awaitable[ReadinessCheck]]] = {}
@@ -169,9 +171,15 @@ async def readiness() -> ReadinessStatus:
     """
     # Run registered checks sequentially; switch to asyncio.gather() if the
     # number of dependencies makes latency a concern.
-    checks: dict[str, ReadinessCheck] = {
-        name: await check_fn() for name, check_fn in READINESS_CHECKS.items()
-    }
+    # #CRITICAL: external-resources: a raising probe must degrade to a failed
+    # check (503 with details), never escape as an unhandled 500.
+    # #VERIFY: every probe error is captured into a status=False ReadinessCheck.
+    checks: dict[str, ReadinessCheck] = {}
+    for name, check_fn in READINESS_CHECKS.items():
+        try:
+            checks[name] = await check_fn()
+        except Exception as e:
+            checks[name] = ReadinessCheck(name=name, status=False, error=str(e))
 
     # Determine overall status
     all_healthy = all(check.status for check in checks.values())

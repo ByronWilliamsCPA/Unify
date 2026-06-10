@@ -10,8 +10,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+import foundry_unify.api.health as health_module
 from foundry_unify.api.health import (
-    READINESS_CHECKS,
     ReadinessCheck,
     ReadinessStatus,
     check_cache,
@@ -146,7 +146,8 @@ class TestReadinessEndpoint:
         async def failing_check() -> ReadinessCheck:
             return ReadinessCheck(name="cache", status=False, error="down")
 
-        monkeypatch.setitem(READINESS_CHECKS, "cache", failing_check)
+        # Replace the whole registry so pre-existing entries cannot leak in
+        monkeypatch.setattr(health_module, "READINESS_CHECKS", {"cache": failing_check})
 
         response = client.get("/health/ready")
         body = response.json()
@@ -164,7 +165,7 @@ class TestReadinessEndpoint:
         async def passing_check() -> ReadinessCheck:
             return ReadinessCheck(name="cache", status=True, latency_ms=1.0)
 
-        monkeypatch.setitem(READINESS_CHECKS, "cache", passing_check)
+        monkeypatch.setattr(health_module, "READINESS_CHECKS", {"cache": passing_check})
 
         response = client.get("/health/ready")
         body = response.json()
@@ -172,6 +173,25 @@ class TestReadinessEndpoint:
         assert response.status_code == 200
         assert body["status"] == "ok"
         assert body["checks"]["cache"]["status"] is True
+
+    @pytest.mark.unit
+    def test_readiness_returns_503_when_check_raises(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verify a raising probe degrades to a failed check, not an HTTP 500."""
+
+        async def raising_check() -> ReadinessCheck:
+            msg = "probe exploded"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(health_module, "READINESS_CHECKS", {"cache": raising_check})
+
+        response = client.get("/health/ready")
+        body = response.json()
+
+        assert response.status_code == 503
+        assert body["detail"]["checks"]["cache"]["status"] is False
+        assert body["detail"]["checks"]["cache"]["error"] == "probe exploded"
 
 
 # ---------------------------------------------------------------------------

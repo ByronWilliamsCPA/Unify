@@ -62,9 +62,11 @@ ENV PYTHONUNBUFFERED=1 \
 
 EXPOSE 8000
 
-# Python-based health check (no curl/shell in the runtime image)
+# Python-based health check (no curl/shell in the runtime image).
+# Explicit timeout plus broad except: any probe error means unhealthy (exit 1)
+# without a traceback, and a hung connection cannot outlive --timeout.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD ["python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health/live').status == 200 else 1)"]
+    CMD ["python", "-c", "import sys, urllib.request\ntry:\n    sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health/live', timeout=2).status == 200 else 1)\nexcept Exception:\n    sys.exit(1)"]
 
 # Chainguard python sets ENTRYPOINT ["python"]; clear it so CMD is the full
 # invocation, then run uvicorn from the venv.

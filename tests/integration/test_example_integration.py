@@ -14,20 +14,32 @@ class TestExampleIntegration:
     """Integration tests demonstrating end-to-end workflows."""
 
     @pytest.mark.integration
-    def test_settings_and_logging_integration(self) -> None:
-        """Verify Settings and logging work together.
+    def test_settings_and_logging_integration(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """Verify Settings-driven log configuration reaches the log output.
 
-        This test demonstrates that configuration and logging
-        can be integrated properly.
+        Configures logging from a Settings value and asserts that a record
+        emitted at that level actually flows through the stdlib logging
+        pipeline structlog is bound to, proving the two components integrate
+        rather than merely coexist.
         """
-        from foundry_unify.core.config import Settings
-        from foundry_unify.utils.logging import get_logger
+        import logging
 
-        settings = Settings(log_level="INFO")
+        from foundry_unify.core.config import Settings
+        from foundry_unify.utils.logging import get_logger, setup_logging
+
+        settings = Settings(log_level="DEBUG")
+        setup_logging(level=settings.log_level, json_logs=True)
         logger = get_logger(__name__)
 
-        assert settings.log_level == "INFO"
-        assert logger is not None
+        with caplog.at_level(logging.DEBUG):
+            logger.debug("settings-logging-integration-probe")
+
+        assert any(
+            "settings-logging-integration-probe" in record.getMessage()
+            for record in caplog.records
+        )
 
     @pytest.mark.integration
     def test_package_imports(self) -> None:
