@@ -714,7 +714,7 @@ default = true
 version_toml = ["pyproject.toml:project.version"]
 
 # Commit message parsing
-commit_parser = "conventional_commits"
+commit_parser = "conventional"
 commit_parser_options = { parse_squash_commits = true, ignore_merge_commits = true }
 
 # Version behavior
@@ -739,12 +739,14 @@ prerelease_token = "rc"
 # Changelog configuration
 [tool.semantic_release.changelog]
 template_dir = "templates"
-changelog_file = "CHANGELOG.md"
 exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^ci:",
     "^build:",
 ]
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
 
 [tool.semantic_release.changelog.environment]
 block_start_string = "{%"
