@@ -46,6 +46,7 @@ jobs:
     name: Release Pipeline
     uses: ByronWilliamsCPA/.github/.github/workflows/python-release.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
       coverage-threshold: 80
       source-directory: 'src'

@@ -96,7 +96,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         )
 
         # Remove server identification (OWASP A09)
-        response.headers.pop("Server", None)
+        if "server" in response.headers:
+            del response.headers["server"]
 
         return response
 
@@ -114,10 +115,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         - fastapi-limiter (https://github.com/long2ice/fastapi-limiter)
 
     Args:
-        requests_per_minute: Maximum requests per IP per minute
-        burst_size: Maximum burst requests allowed
-        max_tracked_ips: Maximum IPs to track (prevents memory exhaustion)
-        cleanup_interval: Seconds between full cleanup cycles
+        app (ASGIApp): The ASGI application to wrap.
+        requests_per_minute (int): Maximum requests per IP per minute.
+        burst_size (int): Maximum burst requests allowed.
+        max_tracked_ips (int): Maximum IPs to track (prevents memory exhaustion).
+        cleanup_interval (int): Seconds between full cleanup cycles.
     """
 
     def __init__(
@@ -128,7 +130,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         max_tracked_ips: int = 10000,
         cleanup_interval: int = 300,
     ) -> None:
-        """Initialize rate limiter."""
         super().__init__(app)
         self.requests_per_minute = requests_per_minute
         self.burst_size = burst_size
@@ -145,7 +146,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         2. If we exceed max_tracked_ips, removes least recently active IPs
 
         Args:
-            current_time: Current timestamp for expiration checks
+            current_time (float): Current timestamp for expiration checks.
         """
         # Only run full cleanup periodically to avoid performance impact
         if current_time - self._last_cleanup < self.cleanup_interval:
@@ -286,10 +287,10 @@ class SSRFPreventionMiddleware(BaseHTTPMiddleware):
         """Check if an IP address is private, loopback, or otherwise internal.
 
         Args:
-            ip_str: IP address string to validate
+            ip_str (str): IP address string to validate.
 
         Returns:
-            True if the IP is private/internal, False otherwise
+            bool: True if the IP is private/internal, False otherwise.
         """
         import ipaddress
 
@@ -319,10 +320,10 @@ class SSRFPreventionMiddleware(BaseHTTPMiddleware):
         """Extract hostname from URL string.
 
         Args:
-            url: URL string to parse
+            url (str): URL string to parse.
 
         Returns:
-            Hostname string or None if parsing fails
+            str | None: Hostname string or None if parsing fails.
         """
         from urllib.parse import urlparse
 
@@ -337,10 +338,10 @@ class SSRFPreventionMiddleware(BaseHTTPMiddleware):
         """Extract scheme from URL string.
 
         Args:
-            url: URL string to parse
+            url (str): URL string to parse.
 
         Returns:
-            Scheme string or None if parsing fails
+            str | None: Scheme string or None if parsing fails.
         """
         from urllib.parse import urlparse
 
@@ -354,10 +355,10 @@ class SSRFPreventionMiddleware(BaseHTTPMiddleware):
         """Check if a URL points to a blocked destination.
 
         Args:
-            url: URL string to validate
+            url (str): URL string to validate.
 
         Returns:
-            True if the URL should be blocked, False otherwise
+            bool: True if the URL should be blocked, False otherwise.
         """
         # Check scheme
         scheme = self._extract_scheme_from_url(url)
@@ -433,13 +434,13 @@ def add_security_middleware(
     This configures comprehensive security following OWASP best practices.
 
     Args:
-        app: FastAPI application instance
-        enable_https_redirect: Redirect HTTP to HTTPS (production only)
-        enable_rate_limiting: Enable rate limiting middleware
-        enable_ssrf_prevention: Enable SSRF prevention middleware
-        allowed_origins: CORS allowed origins (default: none)
-        allowed_hosts: Trusted host names (default: all)
-        rate_limit_rpm: Rate limit requests per minute
+        app (FastAPI): FastAPI application instance.
+        enable_https_redirect (bool): Redirect HTTP to HTTPS (production only).
+        enable_rate_limiting (bool): Enable rate limiting middleware.
+        enable_ssrf_prevention (bool): Enable SSRF prevention middleware.
+        allowed_origins (list[str] | None): CORS allowed origins (default: none).
+        allowed_hosts (list[str] | None): Trusted host names (default: all).
+        rate_limit_rpm (int): Rate limit requests per minute.
 
     Example:
         >>> from fastapi import FastAPI
