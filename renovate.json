@@ -99,10 +99,6 @@
       "vulnerabilityAlerts": {
         "enabled": true
       },
-      "matchSeverity": [
-        "CRITICAL",
-        "HIGH"
-      ],
       "labels": [
         "security",
         "critical",
