@@ -26,6 +26,7 @@ permissions:
   contents: read
   security-events: write
   pull-requests: write
+  actions: read  # required by org python-security-analysis.yml codeql job
 
 # Uses org-level reusable workflow
 jobs:
