@@ -28,17 +28,6 @@ from foundry_unify.middleware.security import (
 # ---------------------------------------------------------------------------
 
 
-def _make_app_with(*_middleware_classes_and_kwargs: Any) -> FastAPI:
-    """Build a minimal FastAPI app and register an echo route."""
-    app = FastAPI()
-
-    @app.get("/ping")
-    async def ping() -> dict[str, str]:
-        return {"pong": "ok"}
-
-    return app
-
-
 def _simple_app(middleware_cls: Any, **kwargs: Any) -> FastAPI:
     """Build a FastAPI app with a single middleware and a ping route."""
     app = FastAPI()

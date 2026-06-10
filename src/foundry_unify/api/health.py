@@ -16,9 +16,13 @@ from __future__ import annotations
 
 import sys
 import time
+from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
 
 router = APIRouter(prefix="/health", tags=["health"])
 
@@ -136,6 +140,13 @@ async def check_external_service() -> ReadinessCheck:
         )
 
 
+# Registry of readiness checks evaluated by the /ready endpoint.
+# Register dependency probes at application startup, e.g.:
+#   READINESS_CHECKS["cache"] = check_cache
+#   READINESS_CHECKS["external_api"] = check_external_service
+READINESS_CHECKS: dict[str, Callable[[], Awaitable[ReadinessCheck]]] = {}
+
+
 @router.get(
     "/ready",
     response_model=ReadinessStatus,
@@ -156,15 +167,11 @@ async def readiness() -> ReadinessStatus:
     Returns HTTP 503 if any critical dependency is unavailable.
     If this fails, Kubernetes will stop sending traffic to this pod.
     """
-    checks: dict[str, ReadinessCheck] = {}
-
-    # Run all checks in parallel for better performance
-    # For now, run sequentially - can be optimized with asyncio.gather()
-    # Uncomment if using cache:
-    # checks["cache"] = await check_cache()
-
-    # Uncomment if checking external services:
-    # checks["external_api"] = await check_external_service()
+    # Run registered checks sequentially; switch to asyncio.gather() if the
+    # number of dependencies makes latency a concern.
+    checks: dict[str, ReadinessCheck] = {
+        name: await check_fn() for name, check_fn in READINESS_CHECKS.items()
+    }
 
     # Determine overall status
     all_healthy = all(check.status for check in checks.values())

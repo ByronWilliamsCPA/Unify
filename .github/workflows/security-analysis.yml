@@ -1,10 +1,9 @@
 ---
 # Security Analysis Workflow
-# Runs security scans including Bandit, Safety, and dependency checks.
+# Runs security scans including Bandit and dependency checks.
 #
 # Features:
 #   - Bandit static analysis for Python
-#   - Safety dependency vulnerability scanning
 #   - Weekly scheduled scans
 name: Security Analysis
 

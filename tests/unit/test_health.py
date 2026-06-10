@@ -6,13 +6,12 @@ plus the ReadinessCheck helper functions and response models.
 
 from __future__ import annotations
 
-import asyncio
-
 import pytest
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from foundry_unify.api.health import (
+    READINESS_CHECKS,
     ReadinessCheck,
     ReadinessStatus,
     check_cache,
@@ -139,24 +138,40 @@ class TestReadinessEndpoint:
         assert body["uptime_seconds"] >= 0
 
     @pytest.mark.unit
-    def test_readiness_503_logic_raises_http_exception(self) -> None:
-        """Verify that a failing check dict triggers the 503 HTTPException path."""
-        checks = {"cache": ReadinessCheck(name="cache", status=False, error="down")}
-        all_healthy = all(check.status for check in checks.values())
+    def test_readiness_returns_503_when_check_fails(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verify a failing registered check drives /health/ready to HTTP 503."""
 
-        assert not all_healthy
-        with pytest.raises(HTTPException) as exc_info:
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail={
-                    "status": "unavailable",
-                    "checks": {
-                        name: check.model_dump() for name, check in checks.items()
-                    },
-                },
-            )
+        async def failing_check() -> ReadinessCheck:
+            return ReadinessCheck(name="cache", status=False, error="down")
 
-        assert exc_info.value.status_code == 503
+        monkeypatch.setitem(READINESS_CHECKS, "cache", failing_check)
+
+        response = client.get("/health/ready")
+        body = response.json()
+
+        assert response.status_code == 503
+        assert body["detail"]["status"] == "unavailable"
+        assert body["detail"]["checks"]["cache"]["error"] == "down"
+
+    @pytest.mark.unit
+    def test_readiness_returns_200_with_passing_check(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verify a passing registered check is reported in the 200 response."""
+
+        async def passing_check() -> ReadinessCheck:
+            return ReadinessCheck(name="cache", status=True, latency_ms=1.0)
+
+        monkeypatch.setitem(READINESS_CHECKS, "cache", passing_check)
+
+        response = client.get("/health/ready")
+        body = response.json()
+
+        assert response.status_code == 200
+        assert body["status"] == "ok"
+        assert body["checks"]["cache"]["status"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -428,7 +443,3 @@ class TestApiInit:
         from foundry_unify.api import health_router
 
         assert health_router.prefix == "/health"
-
-
-# Keep asyncio imported to suppress unused import warning from ruff
-_ = asyncio
