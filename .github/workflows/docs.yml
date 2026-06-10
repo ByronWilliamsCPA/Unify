@@ -31,6 +31,7 @@ jobs:
     name: Build & Deploy Docs
     uses: ByronWilliamsCPA/.github/.github/workflows/python-docs.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
       deploy-to-pages: >-
         ${{

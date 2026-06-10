@@ -774,3 +774,12 @@ token = { env = "GH_TOKEN" }
 [tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
 upload_to_vcs_release = true
+
+# Dependency vulnerability scanning
+# Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
+[tool.pip-audit]
+ignore-vuln = [
+    # py 1.11.0 ReDoS in py.path.svnwc (SVN paths). Transitive via interrogate;
+    # no fixed release of py exists. The vulnerable SVN code path is never used.
+    "PYSEC-2022-42969",
+]

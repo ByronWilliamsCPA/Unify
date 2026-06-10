@@ -130,3 +130,28 @@ path = [
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "2025 Byron Williams"
+
+
+# Pre-existing files (added 2026-05-08 to clear REUSE compliance backlog)
+# These files predate the centralized REUSE.toml coverage. Licensed CC0-1.0
+# (public domain dedication) consistent with other configuration files.
+[[annotations]]
+path = [
+    ".claude/settings.local.json.example",
+    ".claude/skills/project-planning/scripts/validate-planning-docs.py",
+    ".cruft.json",
+    ".darglint",
+    ".dockerignore",
+    ".env.example",
+    ".infisical.json",
+    ".markdownlint.json",
+    ".mutmut_config",
+    ".prettierrc",
+    ".shellcheckrc",
+    ".yamllint",
+    "Dockerfile",
+    "scripts/README.md",
+    "uv.lock",
+]
+SPDX-License-Identifier = "CC0-1.0"
+SPDX-FileCopyrightText = "2025 Byron Williams"

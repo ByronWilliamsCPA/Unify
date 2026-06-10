@@ -16,9 +16,13 @@ from __future__ import annotations
 
 import sys
 import time
+from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
 
 router = APIRouter(prefix="/health", tags=["health"])
 
@@ -41,8 +45,10 @@ class ReadinessCheck(BaseModel):
 
     name: str = Field(..., description="Dependency name")
     status: bool = Field(..., description="Check passed")
-    latency_ms: float | None = Field(None, description="Check latency in milliseconds")
-    error: str | None = Field(None, description="Error message if failed")
+    latency_ms: float | None = Field(
+        default=None, description="Check latency in milliseconds"
+    )
+    error: str | None = Field(default=None, description="Error message if failed")
 
 
 class ReadinessStatus(HealthStatus):
@@ -134,6 +140,15 @@ async def check_external_service() -> ReadinessCheck:
         )
 
 
+# Registry of readiness checks evaluated by the /ready endpoint.
+# #ASSUME: external-resources: probes are registered at application startup
+# and an empty registry means the service reports ready unconditionally.
+# #VERIFY: register every critical dependency probe before serving traffic:
+#   READINESS_CHECKS["cache"] = check_cache
+#   READINESS_CHECKS["external_api"] = check_external_service
+READINESS_CHECKS: dict[str, Callable[[], Awaitable[ReadinessCheck]]] = {}
+
+
 @router.get(
     "/ready",
     response_model=ReadinessStatus,
@@ -154,15 +169,17 @@ async def readiness() -> ReadinessStatus:
     Returns HTTP 503 if any critical dependency is unavailable.
     If this fails, Kubernetes will stop sending traffic to this pod.
     """
+    # Run registered checks sequentially; switch to asyncio.gather() if the
+    # number of dependencies makes latency a concern.
+    # #CRITICAL: external-resources: a raising probe must degrade to a failed
+    # check (503 with details), never escape as an unhandled 500.
+    # #VERIFY: every probe error is captured into a status=False ReadinessCheck.
     checks: dict[str, ReadinessCheck] = {}
-
-    # Run all checks in parallel for better performance
-    # For now, run sequentially - can be optimized with asyncio.gather()
-    # Uncomment if using cache:
-    # checks["cache"] = await check_cache()
-
-    # Uncomment if checking external services:
-    # checks["external_api"] = await check_external_service()
+    for name, check_fn in READINESS_CHECKS.items():
+        try:
+            checks[name] = await check_fn()
+        except Exception as e:
+            checks[name] = ReadinessCheck(name=name, status=False, error=str(e))
 
     # Determine overall status
     all_healthy = all(check.status for check in checks.values())
