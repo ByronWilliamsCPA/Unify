@@ -18,10 +18,10 @@ updates:
       include: "scope"
     pull-request-branch-name:
       separator: "/"
-    ignore:
-      # Add packages to ignore if needed
-      # - dependency-name: "numpy"
-      #   versions: ["0.x"]
+    # To ignore packages, add an `ignore:` list here, e.g.:
+    # ignore:
+    #   - dependency-name: "numpy"
+    #     versions: ["0.x"]
     allow:
       - dependency-type: "all"
 
