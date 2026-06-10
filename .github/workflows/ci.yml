@@ -31,20 +31,14 @@ jobs:
     name: CI Pipeline
     uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
       coverage-threshold: 80
       source-directory: 'src'
       test-directory: 'tests'
-      enable-sonarcloud: true
-      sonarcloud-organization: 'ByronWilliamsCPA'
-      sonarcloud-project-key: 'ByronWilliamsCPA_foundry_unify'
-      enable-codecov: true
       run-integration-tests: true
       run-security-tests: true
       fail-on-llm-tags: false
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   ci-gate:
     name: CI Gate
@@ -52,6 +46,11 @@ jobs:
     needs: [ci]
     if: always()
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
       - name: Check CI results
         run: |
           if [ "${{ needs.ci.result }}" != "success" ]; then

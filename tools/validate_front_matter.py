@@ -260,23 +260,18 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    # Collect Markdown files (excluding planning docs)
+    # Collect Markdown files (excluding planning docs and local-only notes)
+    excluded_dirs = {"planning", "superpowers"}
     md_files: list[Path] = []
     for path_str in args.paths:
         path = Path(path_str)
         if path.is_dir():
-            # Exclude docs/planning/ from validation
             all_md_files = path.rglob("*.md")
             md_files.extend(
-                [
-                    f
-                    for f in all_md_files
-                    if not any(part == "planning" for part in f.parts)
-                ]
+                [f for f in all_md_files if not excluded_dirs.intersection(f.parts)]
             )
         elif path.suffix.lower() == ".md":
-            # Only add file if not in planning directory
-            if "planning" not in path.parts:
+            if not excluded_dirs.intersection(path.parts):
                 md_files.append(path)
 
     if not md_files:

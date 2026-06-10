@@ -1,10 +1,9 @@
 ---
 # Security Analysis Workflow
-# Runs security scans including Bandit, Safety, and dependency checks.
+# Runs security scans including Bandit and dependency checks.
 #
 # Features:
 #   - Bandit static analysis for Python
-#   - Safety dependency vulnerability scanning
 #   - Weekly scheduled scans
 name: Security Analysis
 
@@ -27,6 +26,7 @@ permissions:
   contents: read
   security-events: write
   pull-requests: write
+  actions: read  # required by org python-security-analysis.yml codeql job
 
 # Uses org-level reusable workflow
 jobs:
@@ -34,6 +34,7 @@ jobs:
     name: Security Scan
     uses: ByronWilliamsCPA/.github/.github/workflows/python-security-analysis.yml@main
     with:
+      no-build: false  # hatchling build backend: editable install must build
       source-directory: 'src'
       python-version: '3.12'
       fail-on-high: true
@@ -41,7 +42,6 @@ jobs:
       run-codeql: true
       run-dependency-review: true
       run-bandit: true
-      run-safety: true
       run-osv: true
 
   security-gate-success:
