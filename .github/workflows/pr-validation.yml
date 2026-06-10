@@ -60,7 +60,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install UV
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24 # v7.1.1
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -123,6 +123,11 @@ jobs:
     needs: [core-validation, dead-code, link-check]
     if: always()
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
       - name: Check validation results
         run: |
           echo "## Dependency & Standards Validation" >> $GITHUB_STEP_SUMMARY

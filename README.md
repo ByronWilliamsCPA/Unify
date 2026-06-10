@@ -34,13 +34,30 @@
 
 ## Overview
 
-OCR orchestration and layout analysis service for the Foundry RAG pipeline
+Foundry Unify is the foundation library for an OCR orchestration and layout
+analysis service that will sit in front of the Foundry RAG pipeline. The OCR
+orchestration logic is still on the roadmap; what currently ships in
+`src/foundry_unify/` is the production scaffolding the orchestrator will be
+built on top of:
 
-This project provides:
-- Core functionality for ocr orchestration and layout analysis service for the foundry rag pipeline
-- Production-ready code with comprehensive testing
-- Well-documented API and architecture
-- Security-first development practices
+- **FastAPI security middleware** (`foundry_unify.middleware.security`) —
+  OWASP-aligned security headers, in-memory rate limiting with burst control,
+  CORS, trusted-host, and an SSRF prevention middleware that blocks private
+  IPs, cloud metadata endpoints, and dangerous URL schemes.
+- **Request correlation middleware** (`foundry_unify.middleware.correlation`) —
+  propagates `X-Correlation-ID` / `X-Request-ID` / `X-Trace-ID` / `X-Span-ID`
+  via `contextvars`, with a structlog processor to add the IDs to every log
+  record.
+- **Structured logging** (`foundry_unify.utils.logging`) — structlog setup with
+  rich console output for development and JSON output for production, plus a
+  `log_performance` helper.
+- **Pydantic Settings** (`foundry_unify.core.config`) — environment-driven
+  configuration loaded from `FOUNDRY_UNIFY_*` variables.
+- **Centralised exception hierarchy** (`foundry_unify.core.exceptions`) —
+  typed errors (`ValidationError`, `AuthenticationError`, `APIError`, etc.)
+  with `to_dict()` for safe JSON responses.
+- **Kubernetes health endpoints** (`foundry_unify.api.health`) — `/health/live`,
+  `/health/ready`, `/health/startup` FastAPI router ready to mount.
 
 ## Features
 
@@ -75,15 +92,27 @@ pipx install uv
 
 ### Installation
 
+Foundry Unify is not yet published to PyPI. Install from source:
+
 ```bash
-# Clone repository
+# Using uv (recommended)
+uv add git+https://github.com/ByronWilliamsCPA/Unify.git
+# or, for the FastAPI middleware stack:
+uv add "foundry-unify[api] @ git+https://github.com/ByronWilliamsCPA/Unify.git"
+
+# Using pip
+pip install git+https://github.com/ByronWilliamsCPA/Unify.git
+pip install "foundry-unify[api] @ git+https://github.com/ByronWilliamsCPA/Unify.git"
+```
+
+For local development, clone the repository and install all extras:
+
+```bash
 git clone https://github.com/ByronWilliamsCPA/Unify.git
-cd foundry_unify
+cd Unify
 
 # Install dependencies (includes dev tools - REQUIRED for development)
 uv sync --all-extras
-# Install with ML dependencies
-uv sync --all-extras,ml
 
 # Setup pre-commit hooks (required)
 uv run pre-commit install
@@ -91,15 +120,82 @@ uv run pre-commit install
 
 ### Basic Usage
 
-```python
-# Import and use the package
-from foundry_unify import YourModule
+Wire the middleware, logging, and health endpoints into a FastAPI app
+(requires the `[api]` extra):
 
-# Example: Create an instance and use it
-module = YourModule()
-result = module.process()
-print(result)
+```python
+from fastapi import FastAPI
+
+from foundry_unify.api.health import router as health_router
+from foundry_unify.core.config import settings
+from foundry_unify.middleware import (
+    CorrelationMiddleware,
+    add_security_middleware,
+)
+from foundry_unify.utils.logging import get_logger, setup_logging
+
+# Configure structured logging (JSON in production, rich console in dev).
+setup_logging(
+    level=settings.log_level,
+    json_logs=settings.json_logs,
+    include_timestamp=settings.include_timestamp,
+    include_correlation=True,
+)
+logger = get_logger(__name__)
+
+app = FastAPI(title="foundry-unify")
+
+# Correlation must be added first so subsequent middleware can log with IDs.
+app.add_middleware(CorrelationMiddleware)
+
+# Security headers, CORS, rate limiting, SSRF prevention.
+add_security_middleware(
+    app,
+    enable_https_redirect=False,         # Set True behind TLS-terminating proxies.
+    enable_rate_limiting=True,
+    enable_ssrf_prevention=True,
+    allowed_origins=["https://example.com"],
+    allowed_hosts=["api.example.com"],
+    rate_limit_rpm=100,
+)
+
+# Kubernetes probes at /health/live, /health/ready, /health/startup.
+app.include_router(health_router)
+
+
+@app.get("/")
+async def root() -> dict[str, str]:
+    logger.info("root_called")
+    return {"status": "ok"}
 ```
+
+Raise typed exceptions from the centralised hierarchy:
+
+```python
+from foundry_unify.core.exceptions import ValidationError
+
+raise ValidationError(
+    "Invalid email format",
+    field="email",
+    value="not-an-email",
+)
+# ValidationError.to_dict() -> JSON-serialisable error payload.
+```
+
+### Configuration
+
+Settings load from environment variables with the `FOUNDRY_UNIFY_` prefix
+(see `src/foundry_unify/core/config.py`). All variables are optional.
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `FOUNDRY_UNIFY_LOG_LEVEL` | `DEBUG`/`INFO`/`WARNING`/`ERROR`/`CRITICAL` | `INFO` | Application log level. |
+| `FOUNDRY_UNIFY_JSON_LOGS` | bool | `false` | Emit JSON logs (production) instead of rich console output. |
+| `FOUNDRY_UNIFY_INCLUDE_TIMESTAMP` | bool | `true` | Include ISO-8601 timestamps in log records. |
+
+`Settings` is a `pydantic_settings.BaseSettings` subclass and also reads from
+a `.env` file when one is present. Extra unrecognised variables are ignored
+(`extra="ignore"`).
 
 ## Supply Chain Security
 
