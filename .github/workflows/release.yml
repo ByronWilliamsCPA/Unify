@@ -4,10 +4,14 @@
 # manual tag-based releases.
 #
 # Features:
-#   - Pre-release testing
 #   - Semantic versioning (if enabled) or manual tag-based releases
-#   - PyPI publishing with OIDC trusted publishing
 #   - GitHub Release creation
+#
+# Notes:
+#   - Tests run in the upstream CI workflow that triggers this one
+#     (run-tests: false here)
+#   - PyPI publishing is disabled (publish-to-pypi: false); GitHub
+#     Releases only
 name: Semantic Release
 
 "on":
@@ -36,20 +40,24 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
-  attestations: write
+  contents: read
 
 # Uses org-level reusable workflow
 jobs:
   release:
     name: Release Pipeline
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+      attestations: write
+    # workflow_dispatch is restricted to main so a manual release cannot
+    # bypass CI gating from a feature branch
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref_name == 'main') ||
       github.event.workflow_run.conclusion == 'success'
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-release.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-release.yml@987d517d3c8e4b180f4dd15de6d9575f0df91182  # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
@@ -61,3 +69,6 @@ jobs:
       pypi-package-name: 'foundry-unify'
       run-tests: false
       skip-tests-reason: 'Tests run in upstream CI pipeline before this workflow fires'
+    # Pass repo/environment secrets through to the reusable workflow
+    # (required for release credentials beyond the default GITHUB_TOKEN)
+    secrets: inherit
