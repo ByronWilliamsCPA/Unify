@@ -93,6 +93,36 @@ workflows to catch contract drift.
 
 ---
 
+### ADR template fails the template's own front matter validator
+
+- **Priority**: Medium
+- **Category**: Tooling
+- **Discovered**: 2026-06-09
+
+**Issue**: `docs/ADRs/adr-template.md` ships with `schema_type: adr`, but the
+front matter contract in `tools/frontmatter_contract/models.py` only defines
+`common`, `script`, `knowledge`, and `planning`. The `validate-front-matter`
+pre-commit hook therefore fails on a freshly generated project the first time
+any commit stages a file under `docs/`.
+
+**Context**: Discovered while committing an unrelated docs change; the hook
+uses `pass_filenames: false` and scans the whole `docs/` tree, so the
+pre-existing template defect blocked the commit.
+
+**Suggested Fix**: Either add an `AdrFM` schema to the contract (the template
+already carries `component` and `source`, so it could subclass `PlanningFM`)
+or ship the ADR template with `schema_type: planning`. Note the template also
+uses ADR-vocabulary `status: proposed`, which the common schema rejects
+(allowed: `draft`, `in-review`, `published`); a dedicated `AdrFM` schema
+should carry the ADR status vocabulary (proposed/accepted/deprecated/
+superseded). Also consider making the validator respect gitignored paths so
+local-only notes under `docs/` do not fail validation.
+
+**Affected Files**: `docs/ADRs/adr-template.md`,
+`tools/frontmatter_contract/models.py`, `tools/validate_front_matter.py`
+
+---
+
 ## Submitting Feedback
 
 Once you've collected feedback, you can:
