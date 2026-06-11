@@ -25,4 +25,5 @@ jobs:
       coverage-format: cobertura
       workflow-run-id: ${{ github.event.workflow_run.id }}
     secrets:
-      QLTY_COVERAGE_TOKEN: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+      # Org-level secret QLTY_TOKEN holds the Qlty Cloud coverage token
+      QLTY_COVERAGE_TOKEN: ${{ secrets.QLTY_TOKEN }}
