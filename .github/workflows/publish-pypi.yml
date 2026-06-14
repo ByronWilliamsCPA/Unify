@@ -17,7 +17,7 @@ on:
 jobs:
   publish:
     name: Publish Package
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-publish-pypi.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-publish-pypi.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2 # main
     with:
       python-version: '3.12'
       package-name: 'foundry-unify'

@@ -32,7 +32,7 @@ permissions:
 jobs:
   security:
     name: Security Scan
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-security-analysis.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-security-analysis.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2 # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       source-directory: 'src'
