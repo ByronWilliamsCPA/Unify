@@ -35,7 +35,7 @@ permissions:
 jobs:
   compatibility:
     name: Python Compatibility Matrix
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-compatibility.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-compatibility.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2 # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-versions: '["3.10", "3.11", "3.12", "3.13"]'

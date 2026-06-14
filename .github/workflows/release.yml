@@ -57,7 +57,7 @@ jobs:
     if: >-
       (github.event_name == 'workflow_dispatch' && github.ref_name == 'main') ||
       github.event.workflow_run.conclusion == 'success'
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-release.yml@7198a499e8ac9a16b65548c312363a81bae4b4b6  # main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-release.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2  # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'

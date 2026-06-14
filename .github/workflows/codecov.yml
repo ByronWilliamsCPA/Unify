@@ -23,7 +23,7 @@ jobs:
     name: Upload Coverage
     # Only run on successful CI completion
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-codecov.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-codecov.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2 # main
     with:
       artifact-name: 'coverage-reports'
       coverage-files: '*.xml'
@@ -39,7 +39,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
           egress-policy: audit
 

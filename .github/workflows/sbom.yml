@@ -37,7 +37,7 @@ env:
 jobs:
   sbom:
     name: SBOM & Security
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-sbom.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-sbom.yml@01bb5747a7e14b480b26ab94123f25f5e591cde2 # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
