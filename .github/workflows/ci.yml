@@ -29,7 +29,7 @@ permissions:
 jobs:
   ci:
     name: CI Pipeline
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@7d12f5486ab5c856397ebaa4acd3c99ca385227c # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
@@ -47,7 +47,7 @@ jobs:
     if: always()
     steps:
       - name: Harden the runner
-        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
           egress-policy: audit
 
