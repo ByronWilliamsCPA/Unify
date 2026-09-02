@@ -50,6 +50,20 @@ jobs:
       run-hadolint: true
       hadolint-failure-threshold: 'warning'
       generate-sbom: true
-      upload-sarif: true
+      # upload-sarif disabled: GitHub now bills Advanced Security (Code
+      # Security), so github/codeql-action/upload-sarif no longer functions
+      # on this repo. The reusable workflow already uploads the Trivy SARIF
+      # unconditionally as part of the "container-security-reports"
+      # artifact, so no replacement is needed for that scanner. Hadolint's
+      # SARIF has no artifact fallback in the reusable workflow today (its
+      # upload-sarif step was that scanner's only output); Hadolint findings
+      # are not currently surfaced anywhere but the job log. Adding an
+      # artifact fallback requires a change to python-container-security.yml
+      # in ByronWilliamsCPA/.github, out of scope for this caller-only PR.
+      # security-events: write is kept above because the callee jobs still
+      # declare that permission structurally; GitHub validates the
+      # caller-callee permission ceiling at parse time regardless of this
+      # input's runtime value.
+      upload-sarif: false
       artifact-retention-days: 90
     secrets: inherit

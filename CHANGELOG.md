@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial project setup and structure
 
+### Removed
+- Deleted `.github/workflows/dependency-review.yml`. GitHub now bills
+  Advanced Security (Code Security), so `actions/dependency-review-action`
+  no longer functions on this repo.
+- Disabled `upload-sarif` in `scorecard.yml` and `container-security.yml`
+  (org-level `python-scorecard.yml` / `python-container-security.yml`
+  reusable workflow inputs); `github/codeql-action/upload-sarif` no longer
+  functions without Advanced Security. Scorecard and Trivy results remain
+  available via the `scorecard-results` and `container-security-reports`
+  workflow artifacts the reusable workflows already publish unconditionally.
+  Hadolint's SARIF has no artifact fallback today; its findings are visible
+  only in the job log until a follow-up adds one to the reusable workflow.
+- `security-analysis.yml`'s `run-codeql: true` / `run-dependency-review: true`
+  inputs are left as-is; a separate coordinated change updates the shared
+  `python-security-analysis.yml` reusable workflow before this caller changes.
+
 ## [0.1.0] - TBD
 
 ### Added
