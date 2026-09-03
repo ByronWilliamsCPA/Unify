@@ -114,6 +114,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         - slowapi (https://github.com/laurents/slowapi)
         - fastapi-limiter (https://github.com/long2ice/fastapi-limiter)
 
+    All tuning parameters are keyword-only; ``app`` is the sole positional
+    argument, matching how Starlette's ``add_middleware`` forwards options.
+
     Args:
         app (ASGIApp): The ASGI application to wrap.
         requests_per_minute (int): Maximum requests per IP per minute.
@@ -125,6 +128,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app: ASGIApp,
+        *,
         requests_per_minute: int = 60,
         burst_size: int = 10,
         max_tracked_ips: int = 10000,

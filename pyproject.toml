@@ -298,6 +298,13 @@ convention = "google"
 [tool.ruff.lint.isort]
 known-first-party = ["foundry_unify"]
 
+[tool.ruff.lint.pep8-naming]
+# ast.NodeVisitor dispatches on method names built as "visit_" + the AST node
+# class name, so visit_Call, visit_Import and friends are CamelCase by contract
+# with the standard library. Renaming them to snake_case silently disables the
+# visitor. These are the only N802 exceptions in the project.
+extend-ignore-names = ["visit_*"]
+
 [tool.ruff.lint.per-file-ignores]
 # Module init files
 "__init__.py" = ["F401", "D104"]
@@ -773,7 +780,20 @@ upload_to_vcs_release = true
 # Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
 [tool.pip-audit]
 ignore-vuln = [
-    # py 1.11.0 ReDoS in py.path.svnwc (SVN paths). Transitive via interrogate;
-    # no fixed release of py exists. The vulnerable SVN code path is never used.
-    "PYSEC-2022-42969",
+    # nltk 3.10.3 model-artifact path traversal (aliases CVE-2026-81726,
+    # GHSA-8mgp-746c-j5xp). #ASSUME: no fixed release exists. The OSV record
+    # ranges from introduced 0 to last_affected 3.10.3 with no fixed event,
+    # and 3.10.3 is both the pinned version and the newest release on PyPI.
+    # Exposure is dev-only: nltk is transitive via safety, which lives in the
+    # dev and supply-chain extras, so it is absent from the runtime install.
+    # #VERIFY: re-check the affected range each quarterly review with
+    # `curl -s https://api.osv.dev/v1/vulns/GHSA-8mgp-746c-j5xp | jq .affected`
+    # and drop this entry the moment a fixed version ships.
+    # Paired with docs/known-vulnerabilities.md and the GHSA-keyed
+    # [[IgnoredVulns]] entry in osv-scanner.toml.
+    # #EDGE: pip-audit 2.10.1 does not read this table; only the
+    # `--ignore-vuln` CLI flag suppresses a finding. This list records the
+    # accepted risk per the org convention, so anything that wires pip-audit
+    # into CI must pass `--ignore-vuln` for each id below.
+    "PYSEC-2026-3740",
 ]
