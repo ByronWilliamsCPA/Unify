@@ -130,14 +130,22 @@ repos:
   # ============================================================================
   # Ruff Linting and Formatting (Fast, pre-commit stage)
   # ============================================================================
+  # rev tracks the ruff version resolved in uv.lock. When the two drift, the
+  # hook and CI disagree about which rules exist: v0.9.0 still raised A005 for
+  # submodules named after stdlib modules, a rule ruff has since narrowed, so
+  # pre-commit failed on code that `ruff check src/ tests/` accepted.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.0
+    rev: v0.16.5
     hooks:
       - id: ruff
         stages: [pre-commit]
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
         stages: [pre-commit]
+        # Python only. Newer ruff-format also rewrites Python code blocks
+        # inside Markdown; that is a separate, much wider change than a lint
+        # toolchain alignment, so it is not enabled here.
+        types_or: [python, pyi]
 
   # ============================================================================
   # Qlty Unified Quality Checks (Pre-Push)

@@ -298,6 +298,13 @@ convention = "google"
 [tool.ruff.lint.isort]
 known-first-party = ["foundry_unify"]
 
+[tool.ruff.lint.pep8-naming]
+# ast.NodeVisitor dispatches on method names built as "visit_" + the AST node
+# class name, so visit_Call, visit_Import and friends are CamelCase by contract
+# with the standard library. Renaming them to snake_case silently disables the
+# visitor. These are the only N802 exceptions in the project.
+extend-ignore-names = ["visit_*"]
+
 [tool.ruff.lint.per-file-ignores]
 # Module init files
 "__init__.py" = ["F401", "D104"]
@@ -773,7 +780,8 @@ upload_to_vcs_release = true
 # Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
 [tool.pip-audit]
 ignore-vuln = [
-    # py 1.11.0 ReDoS in py.path.svnwc (SVN paths). Transitive via interrogate;
-    # no fixed release of py exists. The vulnerable SVN code path is never used.
-    "PYSEC-2022-42969",
+    # nltk 3.10.3 XML external entity handling. Transitive via safety; OSV
+    # records this as fixed in 3.10.3, which is the version we pin and the
+    # latest release, so pip-audit's PyPI advisory range is stale upstream.
+    "PYSEC-2026-3740",
 ]

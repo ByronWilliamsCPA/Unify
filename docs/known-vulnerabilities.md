@@ -17,23 +17,34 @@ tags:
 
 ## Accepted Vulnerabilities
 
-### PYSEC-2022-42969 - `py` ReDoS in `py.path.svnwc`
+### PYSEC-2026-3740 - `nltk` advisory range stale upstream
+
+- **Package**: `nltk` 3.10.3
+- **Severity**: Medium
+- **Status**: Accepted (already on the fixed release; advisory range is stale)
+- **First documented**: 2026-09-03
+- **Reassess by**: 2026-11-02
+
+**Description**: `pip-audit` reports PYSEC-2026-3740 against `nltk` 3.10.3 and
+lists no fix version.
+
+**Why accepted**: The OSV record for PYSEC-2026-3740 sets the fixed version to
+3.10.3, and 3.10.3 is both the version this project locks and the latest
+release on PyPI. The affected range published to PyPI's advisory feed has not
+been narrowed to match, so `pip-audit` still flags an already-remediated
+release. `nltk` is a dev-only transitive dependency of `safety`; it is never
+imported by this project and never ships in the runtime distribution.
+
+**Remediation plan**: Drop this entry as soon as the upstream advisory range is
+corrected, or as soon as `nltk` publishes a release above 3.10.3. Re-checked
+against OSV each quarter.
+
+### PYSEC-2022-42969 - `py` ReDoS in `py.path.svnwc` (resolved 2026-09-03)
 
 - **Package**: `py` 1.11.0
-- **Severity**: Medium (regular-expression denial of service)
-- **Status**: Accepted (no fix available)
-- **First documented**: 2026-05-28
-- **Reassess by**: 2026-07-27
-
-**Description**: The `py` library is vulnerable to a ReDoS in the Subversion
-path handling (`py.path.svnwc`) when parsing crafted SVN command output.
-
-**Why accepted**: `py` is an unmaintained transitive dependency pulled in by
-`interrogate` (docstring-coverage tooling). No fixed release of `py` exists.
-The vulnerable code path (`py.path.svnwc`) handles Subversion working copies
-and is never exercised by this project or by `interrogate`'s docstring checks.
-The dependency is dev-only and never ships in the runtime distribution.
-
-**Remediation plan**: Drop the dependency when `interrogate` removes its `py`
-requirement, or replace `interrogate` with a tool that does not depend on `py`.
-Re-checked each quarter against the `interrogate` dependency tree.
+- **Status**: Resolved. No longer an accepted vulnerability.
+- **Resolution**: OSV withdrew the advisory on 2026-06-09 as disputed. The
+  paired `[tool.pip-audit].ignore-vuln` entry and the `osv-scanner.toml`
+  ignores (CVE-2022-42969, PYSEC-2022-42969, GHSA-w596-4wvx-j9j6) were removed
+  in the same change, because osv-scanner exits non-zero on ignore entries that
+  no longer match anything.
