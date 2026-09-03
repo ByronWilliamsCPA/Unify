@@ -48,9 +48,20 @@
 # ============================================================================
 # Add your project's vulnerability exceptions below this line
 
-# No project-specific exceptions are currently required.
-#
 # The former interrogate/py entries (CVE-2022-42969, PYSEC-2022-42969,
 # GHSA-w596-4wvx-j9j6) were removed on 2026-09-03: OSV withdrew that
 # advisory on 2026-06-09, so nothing matched them any more and
 # osv-scanner exited 1 with "has unused ignores".
+
+# nltk: no fixed release exists. The OSV record for this advisory is
+# {"introduced": "0"} to {"last_affected": "3.10.3"}, and 3.10.3 is both the
+# version this lockfile pins and the newest release on PyPI, so there is
+# nothing to upgrade to. nltk is not a runtime dependency of foundry-unify:
+# it arrives only through safety, which is declared in the "dev" and
+# "supply-chain" extras, so it never ships in a deployed environment.
+# Tracked in docs/known-vulnerabilities.md; reassess by 2026-11-02.
+# The matching pip-audit entry is [tool.pip-audit].ignore-vuln in
+# pyproject.toml, which keys on the PYSEC alias of this same advisory.
+[[IgnoredVulns]]
+id = "GHSA-8mgp-746c-j5xp"
+reason = "nltk 3.10.3 is the latest release and the advisory has no fixed version (last_affected 3.10.3). Dev-only transitive dependency via safety, never present at runtime. Accepted 2026-09-03, reassess by 2026-11-02. See docs/known-vulnerabilities.md."

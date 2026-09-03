@@ -780,8 +780,20 @@ upload_to_vcs_release = true
 # Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
 [tool.pip-audit]
 ignore-vuln = [
-    # nltk 3.10.3 XML external entity handling. Transitive via safety; OSV
-    # records this as fixed in 3.10.3, which is the version we pin and the
-    # latest release, so pip-audit's PyPI advisory range is stale upstream.
+    # nltk 3.10.3 model-artifact path traversal (aliases CVE-2026-81726,
+    # GHSA-8mgp-746c-j5xp). #ASSUME: no fixed release exists. The OSV record
+    # ranges from introduced 0 to last_affected 3.10.3 with no fixed event,
+    # and 3.10.3 is both the pinned version and the newest release on PyPI.
+    # Exposure is dev-only: nltk is transitive via safety, which lives in the
+    # dev and supply-chain extras, so it is absent from the runtime install.
+    # #VERIFY: re-check the affected range each quarterly review with
+    # `curl -s https://api.osv.dev/v1/vulns/GHSA-8mgp-746c-j5xp | jq .affected`
+    # and drop this entry the moment a fixed version ships.
+    # Paired with docs/known-vulnerabilities.md and the GHSA-keyed
+    # [[IgnoredVulns]] entry in osv-scanner.toml.
+    # #EDGE: pip-audit 2.10.1 does not read this table; only the
+    # `--ignore-vuln` CLI flag suppresses a finding. This list records the
+    # accepted risk per the org convention, so anything that wires pip-audit
+    # into CI must pass `--ignore-vuln` for each id below.
     "PYSEC-2026-3740",
 ]
