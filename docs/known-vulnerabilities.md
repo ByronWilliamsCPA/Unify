@@ -60,6 +60,11 @@ this entry:
   pass `--ignore-vuln PYSEC-2026-3740` explicitly.
 - `[[IgnoredVulns]]` in `osv-scanner.toml`, keyed on the GHSA alias, because
   osv-scanner matches on the GHSA id it reports.
+- `allow-ghsas` in `.github/workflows/dependency-review.yml`, keyed on the GHSA
+  alias. `fail-on-severity` stays at `high`; only this one id is waived, so
+  every other high or critical advisory still blocks the PR. Without it, every
+  pull request that touches `uv.lock` fails on an advisory with no fix
+  available, Renovate dependency updates included.
 
 **Remediation plan**: Remove both suppressions as soon as `nltk` publishes a
 release above 3.10.3, or as soon as `safety` stops depending on `nltk`.

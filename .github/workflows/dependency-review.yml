@@ -41,3 +41,22 @@ jobs:
           # Deny copyleft and restrictive licenses (deny-list approach)
           deny-licenses: AGPL-3.0, AGPL-3.0-only, AGPL-3.0-or-later, GPL-2.0-only, LGPL-2.0-only
           comment-summary-in-pr: on-failure
+          # #CRITICAL: this is an accepted-risk allowlist, not a severity
+          # downgrade. fail-on-severity stays at high and every other high or
+          # critical advisory still blocks the PR. Only the ids listed here are
+          # waived, and each one must have a dated entry in
+          # docs/known-vulnerabilities.md.
+          #
+          # GHSA-8mgp-746c-j5xp: nltk model-artifact path traversal. #ASSUME:
+          # no fixed release exists. The OSV record runs from introduced 0 to
+          # last_affected 3.10.3 with no fixed event, and 3.10.3 is both the
+          # pinned version and the newest release on PyPI, so no upgrade path
+          # exists. nltk is dev-only, reaching the tree solely through safety
+          # in the dev and supply-chain extras, so it never ships at runtime.
+          # Without this entry every PR that touches uv.lock fails on an
+          # advisory nobody can act on, Renovate updates included.
+          # #VERIFY: drop this id the moment nltk ships a release above
+          # 3.10.3; re-checked at each quarterly review, next 2026-11-02.
+          # The same advisory is waived in osv-scanner.toml (GHSA alias) and
+          # recorded in [tool.pip-audit].ignore-vuln (PYSEC alias).
+          allow-ghsas: GHSA-8mgp-746c-j5xp
