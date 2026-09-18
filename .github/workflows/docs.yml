@@ -29,7 +29,7 @@ permissions:
 jobs:
   docs:
     name: Build & Deploy Docs
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-docs.yml@main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-docs.yml@b7c661ec3bfeb04370ce3a9c748bd8c4e93bfe89 # main
     with:
       no-build: false  # hatchling build backend: editable install must build
       python-version: '3.12'
