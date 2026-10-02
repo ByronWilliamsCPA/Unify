@@ -30,6 +30,10 @@ This feedback will be shared with the template team to improve the cookiecutter 
 **Author**: Byron Williams <byronawilliams@gmail.com>
 **Repository**: https://github.com/ByronWilliamsCPA/Unify
 **Created**: 2026-05-05
+**Pipeline context**: Unify is stage 3 of the five-repository Foundry pipeline; see
+[docs/architecture/pipeline-level-0.md](docs/architecture/pipeline-level-0.md) and the
+[Level 1 architecture](docs/architecture/diagrams/level-1/index.md). The repo is Unify, the package is `foundry_unify`.
+Most of the OCR orchestration design is specified, not built; `src/` is template infrastructure.
 
 ### Technology Stack
 

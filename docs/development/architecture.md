@@ -11,23 +11,21 @@ tags:
 
 This document describes the architecture and design decisions for Foundry Unify.
 
-## Project Structure
+## Pipeline Context
 
-```
-foundry_unify/
-├── src/
-│   └── foundry_unify/
-│       ├── __init__.py          # Package initialization
-│       ├── core/                # Core functionality
-│       │   ├── config.py        # Configuration with Pydantic
-│       │   └── ...
-│       ├── utils/               # Utility modules
-│       │   ├── logging.py       # Structured logging
-│       │   └── ...
-├── tests/                       # Test suite
-├── docs/                        # Documentation
-└── pyproject.toml               # Project configuration
-```
+Unify is stage 3 of the five-repository Foundry pipeline. See the
+[Pipeline Level 0](../architecture/pipeline-level-0.md) page for the pipeline and the
+[Level 1 architecture](../architecture/diagrams/level-1/index.md) page for the planned design, phase plan, and build
+status.
+
+## Summary
+
+Unify (package `foundry_unify`) is designed as a layered, Protocol-based service. It takes Prepare-Doc's
+`DocumentMetadata.json` and corrected pages, or Prepare-Audio's `TranscriptMetadata.json`, runs OCR through
+docling-serve for documents, and writes one `DoclingDOM.json` for Chunk. The approved design is the
+[Foundry Unify design spec](https://github.com/williaby/image-preprocessing-detector/blob/main/docs/superpowers/specs/2026-05-05-foundry-unify-design.md). Today `src/foundry_unify/` contains only template infrastructure: `core/`
+(settings, exceptions), `middleware/` (security, correlation), `api/health.py` (not mounted), and `utils/` (logging).
+The OCR orchestration layers are not built.
 
 ## Design Principles
 

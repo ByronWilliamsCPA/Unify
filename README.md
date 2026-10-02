@@ -1,4 +1,6 @@
-# Foundry Unify
+# Unify (Foundry Unify)
+
+This repository is **Unify**, stage 3 of the Foundry pipeline. The Python package is `foundry_unify`.
 
 ## Quality & Security
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/foundry_unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/foundry_unify)
@@ -34,7 +36,7 @@
 
 ## Overview
 
-Foundry Unify is the foundation library for an OCR orchestration and layout
+Unify (package `foundry_unify`) is, for now, the foundation library for an OCR orchestration and layout
 analysis service that will sit in front of the Foundry RAG pipeline. The OCR
 orchestration logic is still on the roadmap; what currently ships in
 `src/foundry_unify/` is the production scaffolding the orchestrator will be
@@ -65,7 +67,8 @@ built on top of:
 
 The pipeline runs Ingest, then Prepare-Doc or Prepare-Audio, then Unify, then Chunk, and ends at chunks. Embedding,
 vector storage, and search belong to the application that consumes the chunks, not to the pipeline. See
-[Pipeline Level 0 architecture](docs/architecture/pipeline-level-0.md) for the full picture.
+[Pipeline Level 0 architecture](docs/architecture/pipeline-level-0.md) for the full picture and the
+[Level 1 architecture](docs/architecture/diagrams/level-1/index.md) for Unify's planned design and build status.
 
 ## Features
 
