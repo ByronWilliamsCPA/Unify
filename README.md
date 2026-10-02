@@ -5,9 +5,9 @@ This repository is **Unify**, stage 3 of the Foundry pipeline. The Python packag
 ## Quality & Security
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/Unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/Unify)
 [![codecov](https://codecov.io/gh/ByronWilliamsCPA/Unify/graph/badge.svg)](https://codecov.io/gh/ByronWilliamsCPA/Unify)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
 [![REUSE Compliance](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml)
 
 ## CI/CD Status
