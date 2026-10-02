@@ -59,6 +59,14 @@ built on top of:
 - **Kubernetes health endpoints** (`foundry_unify.api.health`) — `/health/live`,
   `/health/ready`, `/health/startup` FastAPI router ready to mount.
 
+## Where this fits in the Foundry pipeline
+
+**Unify** is stage 3. It takes Prepare-Doc's `DocumentMetadata.json` and corrected pages (or Prepare-Audio's `TranscriptMetadata.json`), runs OCR through docling-serve for documents, and writes one `DoclingDOM.json` for Chunk. Specialist OCR engines come later.
+
+The pipeline runs Ingest, then Prepare-Doc or Prepare-Audio, then Unify, then Chunk, and ends at chunks. Embedding,
+vector storage, and search belong to the application that consumes the chunks, not to the pipeline. See
+[Pipeline Level 0 architecture](docs/architecture/pipeline-level-0.md) for the full picture.
+
 ## Features
 
 - **High Quality**: 80%+ test coverage enforced via CI
