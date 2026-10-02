@@ -24,6 +24,8 @@ tags:
 - **Severity**: High (CVSS 8.3)
 - **Status**: Accepted. No fixed release exists; dev-only, never at runtime.
 - **First documented**: 2026-09-03
+- **Last re-verified**: 2026-10-02 (still no fixed release; 3.10.3 remains the
+  newest on PyPI and the OSV range is unchanged)
 - **Reassess by**: 2026-11-02
 
 **Description**: NLTK model-artifact APIs bypass path sanitization and can touch
@@ -53,11 +55,13 @@ affected model-artifact APIs.
 this entry:
 
 - `[tool.pip-audit].ignore-vuln` in `pyproject.toml`, keyed on the PYSEC alias.
-  Note that pip-audit 2.10.1 does not read this table; it honours only the
-  `--ignore-vuln` CLI flag. pip-audit is currently a dev dependency and is not
-  invoked by any workflow, so the table records the accepted risk rather than
-  suppressing a live gate. Anything that later wires pip-audit into CI must
-  pass `--ignore-vuln PYSEC-2026-3740` explicitly.
+  pip-audit 2.10.1 does not read this table itself, but the org reusable
+  workflow (`ByronWilliamsCPA/.github` `python-ci.yml`, "Dependency
+  vulnerability scan" step) reads it and passes each id as `--ignore-vuln`
+  to `uv run --frozen pip-audit --skip-editable`, against an environment synced
+  with `--all-extras`. So the table is a live gate input for CI. Running
+  pip-audit by hand requires passing `--ignore-vuln PYSEC-2026-3740`
+  explicitly.
 - `[[IgnoredVulns]]` in `osv-scanner.toml`, keyed on the GHSA alias, because
   osv-scanner matches on the GHSA id it reports.
 - `allow-ghsas` in `.github/workflows/dependency-review.yml`, keyed on the GHSA

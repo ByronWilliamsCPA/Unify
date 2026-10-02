@@ -135,7 +135,7 @@ repos:
   # submodules named after stdlib modules, a rule ruff has since narrowed, so
   # pre-commit failed on code that `ruff check src/ tests/` accepted.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.5
+    rev: v0.16.10
     hooks:
       - id: ruff
         stages: [pre-commit]

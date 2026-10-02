@@ -791,9 +791,9 @@ ignore-vuln = [
     # and drop this entry the moment a fixed version ships.
     # Paired with docs/known-vulnerabilities.md and the GHSA-keyed
     # [[IgnoredVulns]] entry in osv-scanner.toml.
-    # #EDGE: pip-audit 2.10.1 does not read this table; only the
-    # `--ignore-vuln` CLI flag suppresses a finding. This list records the
-    # accepted risk per the org convention, so anything that wires pip-audit
-    # into CI must pass `--ignore-vuln` for each id below.
+    # #EDGE: pip-audit 2.10.1 does not read this table itself; the org
+    # reusable python-ci.yml reads it and passes each id as `--ignore-vuln`
+    # to pip-audit. #VERIFY: anything that runs pip-audit outside that
+    # workflow must pass `--ignore-vuln` for each id below.
     "PYSEC-2026-3740",
 ]
