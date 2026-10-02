@@ -13,9 +13,12 @@ OCR orchestration and layout analysis service for the Foundry RAG pipeline
 
 ## Key Features
 
+> Status: OCR orchestration and DoclingDOM output are specified, not built. See the
+> [Level 1 architecture](../architecture/diagrams/level-1/index.md). The items below describe the project tooling.
+
 ### Modern Python Development
 
-- **Python 3.12+** with full type annotations
+- **Python 3.10 to 3.14** (tested on 3.12) with full type annotations
 - **UV** for fast dependency management
 - **Ruff** for linting and formatting
 - **BasedPyright** for strict type checking

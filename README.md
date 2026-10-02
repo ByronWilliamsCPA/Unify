@@ -3,21 +3,21 @@
 This repository is **Unify**, stage 3 of the Foundry pipeline. The Python package is `foundry_unify`.
 
 ## Quality & Security
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/foundry_unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/foundry_unify)
-[![codecov](https://codecov.io/gh/ByronWilliamsCPA/foundry_unify/graph/badge.svg)](https://codecov.io/gh/ByronWilliamsCPA/foundry_unify)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_foundry_unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_foundry_unify)
-[![REUSE Compliance](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/reuse.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/reuse.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ByronWilliamsCPA/Unify/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ByronWilliamsCPA/Unify)
+[![codecov](https://codecov.io/gh/ByronWilliamsCPA/Unify/graph/badge.svg)](https://codecov.io/gh/ByronWilliamsCPA/Unify)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ByronWilliamsCPA_Unify&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ByronWilliamsCPA_Unify)
+[![REUSE Compliance](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/reuse.yml)
 
 ## CI/CD Status
-[![CI Pipeline](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/ci.yml?query=branch%3Amain)
-[![Security Analysis](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/security-analysis.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/security-analysis.yml?query=branch%3Amain)
-[![Documentation](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/docs.yml?query=branch%3Amain)
-[![SBOM & Security Scan](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/sbom.yml?query=branch%3Amain)
-[![PR Validation](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/pr-validation.yml)
-[![Release](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/release.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/release.yml)
-[![PyPI Publish](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/ByronWilliamsCPA/foundry_unify/actions/workflows/publish-pypi.yml)
+[![CI Pipeline](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/ci.yml?query=branch%3Amain)
+[![Security Analysis](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/security-analysis.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/security-analysis.yml?query=branch%3Amain)
+[![Documentation](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/docs.yml?query=branch%3Amain)
+[![SBOM & Security Scan](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/sbom.yml/badge.svg?branch=main)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/sbom.yml?query=branch%3Amain)
+[![PR Validation](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/pr-validation.yml)
+[![Release](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/release.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/release.yml)
+[![PyPI Publish](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/ByronWilliamsCPA/Unify/actions/workflows/publish-pypi.yml)
 
 ## Project Info
 
@@ -72,18 +72,25 @@ vector storage, and search belong to the application that consumes the chunks, n
 
 ## Features
 
-- **High Quality**: 80%+ test coverage enforced via CI
-- **Type Safe**: Full type hints with BasedPyright strict mode
-- **Well Documented**: Clear docstrings and comprehensive guides
-- **Developer Friendly**: Pre-commit hooks, automated formatting, linting
-- **Security First**: Dependency scanning, security analysis, SBOM generation
-- **ML Ready**: Optional ML dependencies with PyTorch support
+Built (in `src/foundry_unify/`):
+
+- **Security middleware**: OWASP-style headers for FastAPI
+- **Correlation middleware**: request and trace ID propagation
+- **Structured logging**: structlog with correlation IDs
+- **Exception hierarchy**: centralised, context-carrying exceptions
+
+Specified, not yet built:
+
+- **OCR orchestration** through docling-serve
+- **DoclingDOM.json output** for the Chunk stage
+
+See the [Level 1 architecture](docs/architecture/diagrams/level-1/index.md) for design and build status.
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.10+ (tested with 3.12)
+- Python 3.10 to 3.14 (`requires-python = ">=3.10,<3.15"`; tested with 3.12)
 - [UV](https://docs.astral.sh/uv/) for dependency management
 
 **Install UV**:
@@ -567,12 +574,13 @@ qlty check --plugin osv_scanner
 
 ## Project Structure
 
-```
-foundry_unify/
+```text
+Unify/
 ├── src/foundry_unify/     # Main package
-│   ├── __init__.py
-│   ├── core.py                           # Core functionality
-│   └── utils/                            # Utility modules
+│   ├── api/                              # Health router (not mounted)
+│   ├── core/                             # Config and exceptions
+│   ├── middleware/                       # Security and correlation
+│   └── utils/                            # Logging (financial.py is a placeholder)
 ├── tests/                                # Test suite
 │   ├── unit/                             # Unit tests
 │   └── integration/                      # Integration tests

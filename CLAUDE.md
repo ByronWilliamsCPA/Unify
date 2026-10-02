@@ -78,7 +78,7 @@ When writing code, ALWAYS tag assumptions that could cause production failures:
 ```python
 # #CRITICAL: [category]: [assumption that could cause outages/data loss]
 # #VERIFY: [defensive code required]
-# Example: Payment processing, auth flows, concurrent writes
+# Example: OCR engine availability, docling-serve timeouts, storage writes
 
 # #ASSUME: [category]: [assumption that could cause bugs]
 # #VERIFY: [validation needed]
@@ -422,6 +422,9 @@ docker build -t foundry_unify .  # Build production image
 ```text
 src/foundry_unify/
 ├── __init__.py              # Package initialization
+├── api/
+│   ├── __init__.py
+│   └── health.py           # Health endpoints (exists, not mounted in any app)
 ├── core/                    # Core business logic
 │   ├── __init__.py
 │   ├── config.py           # Configuration (Pydantic Settings)
@@ -432,12 +435,12 @@ src/foundry_unify/
 │   └── correlation.py      # Request correlation/tracing
 └── utils/                   # Utilities
     ├── __init__.py
-    ├── financial.py        # Financial utilities (Decimal precision)
+    ├── financial.py        # Placeholder (one-line docstring, no code)
     └── logging.py          # Structured logging with correlation
 
 tests/
-├── unit/                   # Unit tests
-├── integration/            # Integration tests
+├── unit/                   # Unit tests (correlation, exceptions, health, security middleware)
+├── integration/            # Integration tests (test_example_integration.py)
 ├── conftest.py            # Pytest fixtures
 └── test_example.py        # Example tests
 
@@ -833,5 +836,5 @@ See `.standards/README.md` for detailed merge instructions.
 
 ---
 
-**Last Updated**: 2026-05-06
+**Last Updated**: 2026-10-02
 **Template Version**: 0.1.0

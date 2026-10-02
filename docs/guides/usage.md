@@ -15,6 +15,8 @@ This guide covers common usage patterns for Foundry Unify.
 
 ### From PyPI
 
+> Status: publication to PyPI is not confirmed; install from source if this fails.
+
 ```bash
 pip install foundry-unify
 ```
@@ -23,7 +25,7 @@ pip install foundry-unify
 
 ```bash
 git clone https://github.com/ByronWilliamsCPA/Unify
-cd foundry_unify
+cd Unify
 uv sync --all-extras
 ```
 

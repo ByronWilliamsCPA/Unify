@@ -23,11 +23,15 @@ uv sync --all-extras
 
 ## Features
 
-- Modern Python 3.12+ support
+> Status: OCR orchestration and DoclingDOM output are specified, not built; see the
+> [Level 1 architecture](architecture/diagrams/level-1/index.md). The list covers the project scaffolding.
+
+- Python 3.10 to 3.14 support (tested on 3.12)
 - Type-safe with BasedPyright strict mode
 - Comprehensive test coverage
 - Structured logging with structlog
 - Docker support
+
 ## Documentation
 
 - [User Guide](guides/overview.md) - Getting started and usage
