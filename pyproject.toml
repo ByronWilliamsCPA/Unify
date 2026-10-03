@@ -298,13 +298,6 @@ convention = "google"
 [tool.ruff.lint.isort]
 known-first-party = ["foundry_unify"]
 
-[tool.ruff.lint.pep8-naming]
-# ast.NodeVisitor dispatches on method names built as "visit_" + the AST node
-# class name, so visit_Call, visit_Import and friends are CamelCase by contract
-# with the standard library. Renaming them to snake_case silently disables the
-# visitor. These are the only N802 exceptions in the project.
-extend-ignore-names = ["visit_*"]
-
 [tool.ruff.lint.per-file-ignores]
 # Module init files
 "__init__.py" = ["F401", "D104"]
@@ -337,6 +330,14 @@ extend-ignore-names = ["visit_*"]
     "S311",   # random - non-crypto random in tests is fine
     "S113",   # request_without_timeout - test HTTP calls may be mocked
 ]
+
+# ast.NodeVisitor dispatches on method names built as "visit_" + the AST node
+# class name, so visit_Call, visit_Import and friends are CamelCase by contract
+# with the standard library; renaming them silently disables the visitor. Scoped
+# to the two scripts that define NodeVisitor subclasses so N802 stays active
+# everywhere else.
+"scripts/check_fips_compatibility.py" = ["N802"]
+"scripts/check_type_hints.py" = ["N802"]
 
 # Scripts (utility code - not packages)
 "scripts/**/*.py" = [
