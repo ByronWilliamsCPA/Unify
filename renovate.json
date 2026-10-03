@@ -118,6 +118,16 @@
       "pinDigests": true
     },
     {
+      "description": "slsa-github-generator rejects SHA refs and must stay on its tag (see #33, 98b8f4c)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "slsa-framework/slsa-github-generator"
+      ],
+      "pinDigests": false
+    },
+    {
       "description": "Pydantic v2 - maintain major version",
       "matchPackageNames": [
         "pydantic",
