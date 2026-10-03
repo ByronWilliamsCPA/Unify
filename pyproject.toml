@@ -331,6 +331,14 @@ known-first-party = ["foundry_unify"]
     "S113",   # request_without_timeout - test HTTP calls may be mocked
 ]
 
+# ast.NodeVisitor dispatches on method names built as "visit_" + the AST node
+# class name, so visit_Call, visit_Import and friends are CamelCase by contract
+# with the standard library; renaming them silently disables the visitor. Scoped
+# to the two scripts that define NodeVisitor subclasses so N802 stays active
+# everywhere else.
+"scripts/check_fips_compatibility.py" = ["N802"]
+"scripts/check_type_hints.py" = ["N802"]
+
 # Scripts (utility code - not packages)
 "scripts/**/*.py" = [
     "ANN", "D", "T20", "TRY", "PTH", "PLR",
@@ -773,7 +781,27 @@ upload_to_vcs_release = true
 # Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
 [tool.pip-audit]
 ignore-vuln = [
-    # py 1.11.0 ReDoS in py.path.svnwc (SVN paths). Transitive via interrogate;
-    # no fixed release of py exists. The vulnerable SVN code path is never used.
-    "PYSEC-2022-42969",
+    # nltk 3.10.3 model-artifact path traversal (aliases CVE-2026-81726,
+    # GHSA-8mgp-746c-j5xp). Exposure is dev-only: nltk is transitive via
+    # safety, which lives in the dev and supply-chain extras, so it is absent
+    # from the runtime install. Paired with docs/known-vulnerabilities.md and
+    # the GHSA-keyed [[IgnoredVulns]] entry in osv-scanner.toml.
+    #
+    # #ASSUME: external resources: no fixed nltk release exists. The GHSA
+    # record runs from introduced 0 to last_affected 3.10.3 with no fixed
+    # event, and 3.10.3 is both the pinned version and the newest release on
+    # PyPI. OSV also holds a conflicting PYSEC-2026-3740 record claiming
+    # fixed 3.10.3; PyPI still reports 3.10.3 as affected, so this waiver
+    # follows GHSA and PyPI.
+    # #VERIFY: re-check both records each quarterly review with
+    # `for i in GHSA-8mgp-746c-j5xp PYSEC-2026-3740; do curl -s
+    # https://api.osv.dev/v1/vulns/$i | jq '.affected[].ranges'; done` and
+    # drop this entry the moment a fixed version ships.
+    #
+    # #EDGE: external resources: pip-audit 2.10.1 does not read this table
+    # itself; the org reusable python-ci.yml reads it and passes each id as
+    # `--ignore-vuln` to pip-audit.
+    # #VERIFY: anything that runs pip-audit outside that workflow must pass
+    # `--ignore-vuln` for each id below.
+    "PYSEC-2026-3740",
 ]

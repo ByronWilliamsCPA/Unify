@@ -48,31 +48,20 @@
 # ============================================================================
 # Add your project's vulnerability exceptions below this line
 
-# ----------------------------------------------------------------------------
-# interrogate/py dependency - CVE-2022-42969 (DISPUTED)
-# ----------------------------------------------------------------------------
-[[IgnoredVulns]]
-id = "CVE-2022-42969"
-reason = """
-DISPUTED ReDoS vulnerability in py package (transitive dependency of interrogate).
-Only affects Subversion repository path parsing, which this project does not use.
-interrogate is a dev dependency for docstring coverage checking.
-The py package is unmaintained but poses no security risk in this context.
-See: https://nvd.nist.gov/vuln/detail/CVE-2022-42969
-"""
+# The former interrogate/py entries (CVE-2022-42969, PYSEC-2022-42969,
+# GHSA-w596-4wvx-j9j6) were removed on 2026-09-03: OSV withdrew that
+# advisory on 2026-06-09, so nothing matched them any more and
+# osv-scanner exited 1 with "has unused ignores".
 
+# nltk: no fixed release exists. The OSV record for this advisory is
+# {"introduced": "0"} to {"last_affected": "3.10.3"}, and 3.10.3 is both the
+# version this lockfile pins and the newest release on PyPI, so there is
+# nothing to upgrade to. nltk is not a runtime dependency of foundry-unify:
+# it arrives only through safety, which is declared in the "dev" and
+# "supply-chain" extras, so it never ships in a deployed environment.
+# Tracked in docs/known-vulnerabilities.md; reassess by 2026-11-02.
+# The matching pip-audit entry is [tool.pip-audit].ignore-vuln in
+# pyproject.toml, which keys on the PYSEC alias of this same advisory.
 [[IgnoredVulns]]
-id = "PYSEC-2022-42969"
-reason = """
-Same as CVE-2022-42969 - DISPUTED ReDoS in py package via interrogate.
-Dev dependency only, affects SVN parsing which is not used.
-"""
-
-[[IgnoredVulns]]
-id = "GHSA-w596-4wvx-j9j6"
-reason = """
-GitHub Security Advisory for py ReDoS (same as CVE-2022-42969).
-DISPUTED vulnerability affecting SVN path parsing.
-interrogate (dev dependency) transitively requires py, but this project
-does not interact with Subversion repositories.
-"""
+id = "GHSA-8mgp-746c-j5xp"
+reason = "nltk 3.10.3 is the latest release and the advisory has no fixed version (last_affected 3.10.3). Dev-only transitive dependency via safety, never present at runtime. Accepted 2026-09-03, reassess by 2026-11-02. See docs/known-vulnerabilities.md."
