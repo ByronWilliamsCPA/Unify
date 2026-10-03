@@ -391,7 +391,7 @@ Your project includes several GitHub Actions workflows:
 |----------|------|---------|
 | CI Pipeline | `ci.yml` | Tests, linting, type checking |
 | Security Analysis | `security-analysis.yml` | Dependency scanning, CodeQL |
-| PR Validation | `pr-validation.yml` | Lock file and requirements sync validation |
+| PR Validation | `pr-validation.yml` | Dead code (vulture) and documentation link checks; its gate job fails if either check fails to run |
 | OpenSSF Scorecard | `scorecard.yml` | Supply chain security assessment |
 | SBOM & Security Scan | `sbom.yml` | Software Bill of Materials generation |
 | Release | `release.yml` | Automated semantic versioning and releases |

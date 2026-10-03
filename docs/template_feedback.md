@@ -231,6 +231,37 @@ the annotation and the file arrive together.
 
 ---
 
+### Template ships a duplicate `python-ci.yml` call and a gate job coupled to it
+
+- **Priority**: High
+- **Category**: CI/CD
+- **Discovered**: 2026-10-03
+
+**Issue**: The template's `pr-validation.yml` calls the org-level
+`python-ci.yml` reusable through a `core-validation` job, and `ci.yml` calls the
+same reusable through its `ci` job. Every pull request therefore runs the full
+Python CI (quality, unit, integration, security tests, coverage, LLM
+governance, matrix) twice. The `Dependency & Standards Validation` gate in
+`pr-validation.yml` lists `core-validation` in `needs:` and its only `exit 1`
+keys off that job's result, so removing the duplicate job also removes the
+gate's only failure path unless the gate is rewritten at the same time.
+
+**Context**: Found while removing the duplicate call in PR #46. Review showed
+that dropping `core-validation` left a required check that could never fail,
+and that the header comment overstated enforcement.
+
+**Suggested Fix**: Call `python-ci.yml` from `ci.yml` only. Keep
+`pr-validation.yml` for supplementary checks (dead code, link check) and have
+its gate job exit 1 unless every job in `needs:` reports `success` (same
+pattern as the `CI Gate` job in `ci.yml`), so the gate fails closed on infra
+failure, cancellation or skip. Do not let a vulture crash pass as "no dead
+code": treat exit codes of 2 or more as failures.
+
+**Affected Files**: `.github/workflows/pr-validation.yml`,
+`.github/workflows/ci.yml`
+
+---
+
 ## Submitting Feedback
 
 Once you've collected feedback, you can:

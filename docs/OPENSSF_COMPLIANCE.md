@@ -124,7 +124,7 @@ Enforced branch protection rules prevent unauthorized changes.
 
 **Protection rules**:
 
-- ✅ Required status checks (CI / CI Pipeline, Security Analysis / Security Scan, PR Validation)
+- ✅ Required status checks (CI / CI Pipeline, Security Analysis / Security Scan, PR Validation / Dependency & Standards Validation)
 - ✅ Required pull request reviews (1 approval)
 - ✅ Code owner reviews required
 - ✅ Dismiss stale reviews
