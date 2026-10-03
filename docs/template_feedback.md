@@ -209,6 +209,28 @@ scheduled job that runs osv-scanner and flags unused ignores early.
 
 ---
 
+### `REUSE.toml` does not annotate `.mcp.json`
+
+- **Priority**: Low
+- **Category**: Licensing / Tooling
+- **Discovered**: 2026-10-03
+
+**Issue**: The template's `REUSE.toml` CC0-1.0 config block covers `*.toml`,
+`*.yml`, `*.yaml` and named dotfiles, but not `.mcp.json`. Adding the standard
+Claude Code project MCP config makes `reuse lint` fail, which blocks the
+required "Check REUSE Compliance" check.
+
+**Context**: Found when PR #41 added `.mcp.json` (context7 and sonarqube
+servers) and the REUSE check failed with no other change.
+
+**Suggested Fix**: Add `".mcp.json"` to the CC0-1.0 config path list in the
+template's `REUSE.toml`, or ship the `.mcp.json` the fleet standard expects so
+the annotation and the file arrive together.
+
+**Affected Files**: `REUSE.toml`
+
+---
+
 ## Submitting Feedback
 
 Once you've collected feedback, you can:
