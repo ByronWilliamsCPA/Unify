@@ -1,9 +1,13 @@
 ---
-description: "How the five Foundry pipeline repositories link together, and where the pipeline ends."
-status: active
+title: "Foundry Pipeline: Level 0 Architecture"
+schema_type: common
+status: published
+owner: core-maintainer
+purpose: "How the five Foundry pipeline repositories link together, and where the pipeline ends."
+tags:
+  - architecture
+  - overview
 ---
-
-# Foundry Pipeline: Level 0 Architecture
 
 > **This repository**: **Unify** (`Unify`)
 >
@@ -62,8 +66,8 @@ changing Chunk's output.
 ## Artifacts and storage
 
 Each stage writes to a numbered prefix under one key per processing run (`{trace_id}`). The prefix layout is the
-contract between stages. The store is S3-compatible object storage; some older code and documents still say Google
-Cloud Storage, and the layout is the same.
+contract between stages. The store is object storage. The specs use Google Cloud Storage, with keys of the form
+`gs://rag-pipeline-{env}/{trace_id}/...`.
 
 ```text
 {trace_id}/

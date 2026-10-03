@@ -1,9 +1,13 @@
 ---
-description: "Pointer to the canonical Level 0 page showing where Unify sits in the Foundry pipeline."
-status: active
+title: "Level 0: Foundry Pipeline Context"
+schema_type: common
+status: published
+owner: core-maintainer
+purpose: "Pointer to the canonical Level 0 page showing where Unify sits in the Foundry pipeline."
+tags:
+  - architecture
+  - overview
 ---
-
-# Level 0: Foundry Pipeline Context
 
 The canonical Level 0 diagram is [Foundry Pipeline: Level 0 Architecture](../../pipeline-level-0.md). That page is
 identical in all five pipeline repositories, so it is not copied here.

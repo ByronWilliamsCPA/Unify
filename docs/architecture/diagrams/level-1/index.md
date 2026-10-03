@@ -1,9 +1,13 @@
 ---
-description: "Planned component layers, inputs, output, phase plan, and build status for Unify."
-status: active
+title: "Level 1: Unify Architecture"
+schema_type: common
+status: published
+owner: core-maintainer
+purpose: "Planned component layers, inputs, output, phase plan, and build status for Unify."
+tags:
+  - architecture
+  - overview
 ---
-
-# Level 1: Unify Architecture
 
 Unify is stage 3 of the [Foundry pipeline](../../pipeline-level-0.md). The design below comes from the approved
 [Foundry Unify design spec](https://github.com/williaby/image-preprocessing-detector/blob/main/docs/superpowers/specs/2026-05-05-foundry-unify-design.md).
