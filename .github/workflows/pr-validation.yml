@@ -1,13 +1,17 @@
 # PR Validation for Foundry Unify
 # Supplementary pull request checks: dead code detection and documentation links.
 #
-# #CRITICAL: this workflow no longer calls the org-level python-ci.yml reusable.
-# That call was a duplicate of ci.yml's `ci` job, which already runs it once per
-# PR and gates on it via the "CI Gate" required check. Removing the duplicate
-# here does not reduce enforcement: CI Gate remains the sole required context
-# tied to the reusable's pass/fail.
-# #VERIFY: after merging, confirm a PR run shows python-ci.yml executing exactly
-# once (in the CI workflow) and that CI Gate still blocks on its failure.
+# #CRITICAL: required-check: the "Dependency & Standards Validation" job is a
+# required status check and fails closed. It exits 1 unless both `dead-code` and
+# `link-check` finish with result `success`, so an infrastructure failure, a
+# cancellation, or a skipped dependency blocks the merge instead of passing
+# silently. Content findings (vulture hits, broken links) stay advisory: both
+# jobs soft-fail on content, so the gate trips only on infra failure, cancel, or
+# skip. This workflow no longer calls the org-level python-ci.yml reusable; that
+# call duplicated ci.yml's `ci` job, and "CI Gate" remains the check tied to it.
+# #VERIFY: confirm a PR run shows python-ci.yml executing once (in the CI
+# workflow), and that the gate job reports failure when a dependency job is
+# cancelled or skipped.
 name: PR Validation
 
 on:
@@ -32,7 +36,6 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   # ==========================================================================
@@ -72,7 +75,16 @@ jobs:
       - name: Run vulture
         run: |
           echo "## Dead Code Report" >> $GITHUB_STEP_SUMMARY
-          uv run vulture src/ --min-confidence 90 | tee vulture-report.txt || true
+          # vulture exits 1 when it finds dead code (advisory) and >=2 on
+          # usage or internal errors. A Python crash also exits 1 but leaves the
+          # report empty, so exit 1 with no report is treated as a crash too.
+          uv run vulture src/ --min-confidence 90 | tee vulture-report.txt
+          vulture_status=${PIPESTATUS[0]}
+          if [ "$vulture_status" -ge 2 ] || { [ "$vulture_status" -eq 1 ] && [ ! -s vulture-report.txt ]; }; then
+            echo "::error::vulture failed to run (exit $vulture_status)"
+            echo "❌ Dead code check crashed (exit $vulture_status)." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           if [ -s vulture-report.txt ]; then
             echo '```' >> $GITHUB_STEP_SUMMARY
             cat vulture-report.txt >> $GITHUB_STEP_SUMMARY
@@ -134,16 +146,24 @@ jobs:
           echo "## Dependency & Standards Validation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
+          failed=0
+
           if [ "${{ needs.dead-code.result }}" == "success" ]; then
             echo "✅ Dead Code Check: Passed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Dead Code Check: ${{ needs.dead-code.result }}" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Dead Code Check: ${{ needs.dead-code.result }}" >> "$GITHUB_STEP_SUMMARY"
+            failed=1
           fi
 
           if [ "${{ needs.link-check.result }}" == "success" ]; then
             echo "✅ Link Check: Passed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Link Check: ${{ needs.link-check.result }}" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Link Check: ${{ needs.link-check.result }}" >> "$GITHUB_STEP_SUMMARY"
+            failed=1
           fi
-          echo ""
-          echo "✅ All validation checks passed!" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$failed" -ne 0 ]; then
+            echo "Dependency & Standards Validation failed"
+            exit 1
+          fi
+          echo "✅ All validation checks passed!" >> "$GITHUB_STEP_SUMMARY"
