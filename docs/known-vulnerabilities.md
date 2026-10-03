@@ -10,10 +10,12 @@ tags:
 ---
 
 > **Purpose**: Document dependency vulnerabilities that `pip-audit` reports but
-> cannot be immediately fixed. Every entry here must correspond to an ID listed
-> in `[tool.pip-audit].ignore-vuln` in `pyproject.toml`. Review quarterly; no
-> entry ages past 60 days without reassessment. The OpenSSF release gate blocks
-> releases for any vulnerability older than 60 days regardless of status.
+> cannot be immediately fixed. Every entry under Accepted Vulnerabilities must
+> correspond to an ID listed in `[tool.pip-audit].ignore-vuln` in
+> `pyproject.toml`; resolved entries are kept under Resolved for history.
+> Review quarterly; no entry ages past 60 days without reassessment. The
+> OpenSSF release gate blocks releases for any vulnerability older than 60 days
+> regardless of status.
 
 ## Accepted Vulnerabilities
 
@@ -31,10 +33,23 @@ tags:
 **Description**: NLTK model-artifact APIs bypass path sanitization and can touch
 files outside the allowed roots.
 
-**Why accepted**: There is nothing to upgrade to. The OSV record's affected
+**Why accepted**: There is nothing to upgrade to. The GHSA record's affected
 range is `{"introduced": "0"}` to `{"last_affected": "3.10.3"}`, with no
 `fixed` event, and 3.10.3 is simultaneously the version this lockfile pins and
 the newest release on PyPI. Upstream has not shipped a remediated version.
+
+**Conflicting OSV records**: OSV holds two records for this one advisory, and
+they disagree. Re-verified 2026-10-02:
+
+| Record | Affected range | Reading |
+| --- | --- | --- |
+| `GHSA-8mgp-746c-j5xp` | introduced `0`, `last_affected` `3.10.3` | 3.10.3 affected, no fix |
+| `PYSEC-2026-3740` | introduced `0`, `fixed` `3.10.3` | 3.10.3 already fixed |
+
+PyPI sides with the GHSA record: it reports 3.10.3 as still affected, with
+`fixed_in` empty. This waiver therefore follows GHSA and PyPI. If PYSEC is
+ever corrected to match, or a release above 3.10.3 appears, the waiver is
+obsolete.
 
 The exposure is limited to development environments. `nltk` is not a direct
 dependency and is not imported anywhere in `src/`; it arrives only as a
@@ -51,7 +66,7 @@ nltk v3.10.3
 The runtime distribution never installs it, and no project code calls the
 affected model-artifact APIs.
 
-**Suppressions**: two, both keyed to this same advisory and both paired with
+**Suppressions**: three, all keyed to this same advisory and both paired with
 this entry:
 
 - `[tool.pip-audit].ignore-vuln` in `pyproject.toml`, keyed on the PYSEC alias.
@@ -66,17 +81,26 @@ this entry:
   osv-scanner matches on the GHSA id it reports.
 - `allow-ghsas` in `.github/workflows/dependency-review.yml`, keyed on the GHSA
   alias. `fail-on-severity` stays at `high`; only this one id is waived, so
-  every other high or critical advisory still blocks the PR. Without it, every
-  pull request that touches `uv.lock` fails on an advisory with no fix
-  available, Renovate dependency updates included.
+  every other high or critical advisory still blocks the PR. The action
+  reports vulnerabilities only on dependencies a PR adds or changes (a version
+  bump counts), so without it any PR that changes nltk's locked version, a
+  lock refresh included, fails on an advisory with no fix available.
 
-**Remediation plan**: Remove both suppressions as soon as `nltk` publishes a
+**Remediation plan**: Remove all three suppressions as soon as `nltk` publishes a
 release above 3.10.3, or as soon as `safety` stops depending on `nltk`.
-Re-check against the OSV API at each quarterly review:
+Re-check both OSV records at each quarterly review:
 
 ```bash
-curl -s https://api.osv.dev/v1/vulns/GHSA-8mgp-746c-j5xp | jq '.affected[].ranges'
+for id in GHSA-8mgp-746c-j5xp PYSEC-2026-3740; do
+  echo "== $id"
+  curl -s "https://api.osv.dev/v1/vulns/$id" | jq '.affected[].ranges'
+done
 ```
+
+## Resolved
+
+Entries below are kept for history. They no longer correspond to any
+`ignore-vuln` id.
 
 ### PYSEC-2022-42969 - `py` ReDoS in `py.path.svnwc` (resolved 2026-09-03)
 
