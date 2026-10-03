@@ -11,33 +11,19 @@ component: Context
 source: "Project initialization"
 ---
 
-This directory contains the essential planning documents for Foundry Unify.
-
-## Quick Start
-
-> **Complete Guide**: See [PROJECT_SETUP.md](../PROJECT_SETUP.md#project-planning-with-claude-code) for the full workflow.
-
-```bash
-# 1. Generate planning documents
-/plan <your project description>
-
-# 2. Synthesize into project plan
-"Synthesize my planning documents into a project plan"
-
-# 3. Review docs/planning/PROJECT-PLAN.md
-
-# 4. Start development
-/git/milestone start feat/phase-0-foundation
-```
+This directory holds planning documents for Unify (package `foundry_unify`). The generated documents below have not
+been written. The authoritative design is the approved
+[Foundry Unify design spec](https://github.com/williaby/image-preprocessing-detector/blob/main/docs/superpowers/specs/2026-05-05-foundry-unify-design.md),
+summarized on the [Level 1 architecture](../architecture/diagrams/level-1/index.md) page.
 
 ## Documents
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [project-vision.md](./project-vision.md) | What & Why | Awaiting Generation |
-| [tech-spec.md](./tech-spec.md) | How to build | Awaiting Generation |
-| [roadmap.md](./roadmap.md) | Implementation plan | Awaiting Generation |
-| [adr/](./adr/) | Architecture decisions | Awaiting Generation |
+| [project-vision.md](./project-vision.md) | What & Why | Not written; see the design spec and Level 1 page |
+| [tech-spec.md](./tech-spec.md) | How to build | Not written; see the design spec and Level 1 page |
+| [roadmap.md](./roadmap.md) | Implementation plan | Not written; see the design spec and Level 1 page |
+| [adr/](./adr/) | Architecture decisions | Not written; see the design spec and Level 1 page |
 
 ## Using Documents During Development
 

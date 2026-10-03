@@ -11,6 +11,8 @@ tags:
 
 Complete API documentation for Foundry Unify.
 
+> Status: only the scaffolding modules below are documented. The OCR orchestration API is specified, not built.
+
 ## Core Module
 
 ::: foundry_unify.core.config
