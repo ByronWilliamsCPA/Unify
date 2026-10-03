@@ -17,11 +17,11 @@ on:
 jobs:
   publish:
     name: Publish Package
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-publish-pypi.yml@c75ea0780b8731a00a0b6ff46b68d69b45fb08b6 # main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-publish-pypi.yml@c75ea0780b8731a00a0b6ff46b68d69b45fb08b6 # v11.0.0
     with:
       python-version: '3.12'
       package-name: 'foundry-unify'
-      test-pypi: ${{ github.event.inputs.test-pypi || false }}
+      use-testpypi: ${{ github.event.inputs.test-pypi || false }}
 
 permissions:
   contents: read

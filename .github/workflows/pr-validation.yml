@@ -39,7 +39,7 @@ jobs:
       contents: read
       pull-requests: write
       checks: write
-    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@c75ea0780b8731a00a0b6ff46b68d69b45fb08b6  # main
+    uses: ByronWilliamsCPA/.github/.github/workflows/python-ci.yml@e8fc83c98c2971ad1ece71573d28171463e30c16  # main
     with:
       python-version: '3.12'
       coverage-threshold: 80
