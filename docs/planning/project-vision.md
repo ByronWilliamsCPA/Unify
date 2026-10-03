@@ -1,14 +1,14 @@
 ---
 title: "Foundry Unify - Project Vision & Scope"
 schema_type: planning
-status: draft
+status: published
 owner: core-maintainer
-purpose: "Document the project vision, scope, and success criteria."
+purpose: "Point to where the Unify vision and scope are documented."
 tags:
   - planning
   - scope
 component: Strategy
-source: "/plan command generation"
+source: "Pointer to the Foundry Unify design spec"
 ---
 
 > **Status**: Not yet written here. The authoritative design is the approved

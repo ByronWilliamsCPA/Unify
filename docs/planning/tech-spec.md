@@ -1,14 +1,14 @@
 ---
 title: "Foundry Unify - Technical Specification"
 schema_type: planning
-status: draft
+status: published
 owner: core-maintainer
-purpose: "Document the technical architecture and implementation details."
+purpose: "Point to where the Unify technical design is documented."
 tags:
   - planning
   - architecture
 component: Development-Tools
-source: "/plan command generation"
+source: "Pointer to the Foundry Unify design spec"
 ---
 
 > **Status**: Not yet written here. The authoritative design is the approved

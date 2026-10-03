@@ -16,23 +16,6 @@ been written. The authoritative design is the approved
 [Foundry Unify design spec](https://github.com/williaby/image-preprocessing-detector/blob/main/docs/superpowers/specs/2026-05-05-foundry-unify-design.md),
 summarized on the [Level 1 architecture](../architecture/diagrams/level-1/index.md) page.
 
-## Quick Start
-
-> **Complete Guide**: See [PROJECT_SETUP.md](../PROJECT_SETUP.md#project-planning-with-claude-code) for the full workflow.
-
-```bash
-# 1. Generate planning documents
-/plan <your project description>
-
-# 2. Synthesize into project plan
-"Synthesize my planning documents into a project plan"
-
-# 3. Review docs/planning/PROJECT-PLAN.md
-
-# 4. Start development
-/git/milestone start feat/phase-0-foundation
-```
-
 ## Documents
 
 | Document | Purpose | Status |

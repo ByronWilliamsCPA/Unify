@@ -1,14 +1,14 @@
 ---
 title: "Foundry Unify - Development Roadmap"
 schema_type: planning
-status: draft
+status: published
 owner: core-maintainer
-purpose: "Document the phased implementation plan and milestones."
+purpose: "Point to where the Unify phase plan is documented."
 tags:
   - planning
   - roadmap
 component: Strategy
-source: "/plan command generation"
+source: "Pointer to the Foundry Unify design spec"
 ---
 
 > **Status**: Not yet written here. The authoritative design is the approved
