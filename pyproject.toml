@@ -9,7 +9,7 @@ authors = [
     {name = "Byron Williams", email = "byronawilliams@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.16"
 license = {text = "MIT"}
 keywords = []
 classifiers = [
@@ -28,7 +28,7 @@ dependencies = [
     "rich>=13.5.0",
     # Cross-Version Compatibility Dependencies
     # =========================================
-    # This template targets Python 3.10-3.14. Add version-specific dependencies
+    # This template targets Python 3.11-3.15. Add version-specific dependencies
     # here if your code needs compatibility shims or replacements.
     #
     # COMMON BACKPORTS FOR 3.10 COMPATIBILITY:
@@ -122,8 +122,11 @@ dev = [
 
 # Machine Learning dependencies
 ml = [
-    "torch>=2.9.0",
-    "torchvision>=0.24.0",
+    # torch/torchvision publish no cp315 wheels (or sdist) yet, so the ml extra
+    # cannot install on Python 3.15. #VERIFY: drop the markers once torch
+    # ships Python 3.15 wheels.
+    "torch>=2.9.0; python_full_version < '3.15'",
+    "torchvision>=0.24.0; python_full_version < '3.15'",
     "numpy>=1.24.0",
     "scikit-learn>=1.3.0",
     "tensorboard>=2.14.0",
@@ -781,27 +784,27 @@ upload_to_vcs_release = true
 # Each ignored ID must have a dated entry in docs/known-vulnerabilities.md.
 [tool.pip-audit]
 ignore-vuln = [
-    # nltk 3.10.3 model-artifact path traversal (aliases CVE-2026-81726,
-    # GHSA-8mgp-746c-j5xp). Exposure is dev-only: nltk is transitive via
-    # safety, which lives in the dev and supply-chain extras, so it is absent
-    # from the runtime install. Paired with docs/known-vulnerabilities.md and
-    # the GHSA-keyed [[IgnoredVulns]] entry in osv-scanner.toml.
+    # filelock 3.32.7: 13 advisories fixed only in filelock 4.0.9 / 4.2.1.
+    # safety (dev and supply-chain extras only) requires filelock<4.0, so the
+    # lock cannot move. filelock is absent from the default runtime install but
+    # present in the dev, supply-chain and ml extras (torch needs it). Paired with
+    # docs/known-vulnerabilities.md, osv-scanner.toml and dependency-review.yml.
     #
-    # #ASSUME: external resources: no fixed nltk release exists. The GHSA
-    # record runs from introduced 0 to last_affected 3.10.3 with no fixed
-    # event, and 3.10.3 is both the pinned version and the newest release on
-    # PyPI. OSV also holds a conflicting PYSEC-2026-3740 record claiming
-    # fixed 3.10.3; PyPI still reports 3.10.3 as affected, so this waiver
-    # follows GHSA and PyPI.
-    # #VERIFY: re-check both records each quarterly review with
-    # `for i in GHSA-8mgp-746c-j5xp PYSEC-2026-3740; do curl -s
-    # https://api.osv.dev/v1/vulns/$i | jq '.affected[].ranges'; done` and
-    # drop this entry the moment a fixed version ships.
-    #
-    # #EDGE: external resources: pip-audit 2.10.1 does not read this table
-    # itself; the org reusable python-ci.yml reads it and passes each id as
-    # `--ignore-vuln` to pip-audit.
-    # #VERIFY: anything that runs pip-audit outside that workflow must pass
-    # `--ignore-vuln` for each id below.
-    "PYSEC-2026-3740",
+    # #ASSUME: external resources: safety keeps its filelock<4.0 cap until a
+    # new safety release lifts it.
+    # #VERIFY: each quarterly review run `uv lock --upgrade-package safety`
+    # and drop these entries once filelock>=4.2.1 resolves.
+    "CVE-2026-112907",
+    "CVE-2026-112908",
+    "CVE-2026-112909",
+    "CVE-2026-112910",
+    "CVE-2026-112911",
+    "CVE-2026-112912",
+    "CVE-2026-112913",
+    "CVE-2026-112915",
+    "CVE-2026-112935",
+    "CVE-2026-112936",
+    "CVE-2026-112938",
+    "CVE-2026-112939",
+    "CVE-2026-112940",
 ]

@@ -13,7 +13,7 @@
 # =============================================================================
 # Chainguard python:latest-dev (Wolfi). Digest-pinned for reproducibility and
 # to satisfy DL3007; Renovate updates the digest as the image is rebuilt.
-FROM cgr.dev/chainguard/python@sha256:85c70fe9ec4313b5c8b1adcb4f0e7fa45d171ae203d2c64c69c4ea3eb96fb7dc AS builder
+FROM cgr.dev/chainguard/python@sha256:157a562dbc225a2a9039dbd8249cbf704202260ba27bf525f24e47a3a685050f AS builder
 
 WORKDIR /app
 
@@ -37,7 +37,7 @@ RUN uv sync --frozen --no-dev
 # =============================================================================
 # Chainguard python:latest (Wolfi minimal runtime). Digest-pinned; Renovate
 # updates the digest as the image is rebuilt.
-FROM cgr.dev/chainguard/python@sha256:1e64347fb2a3f1a57a8839fa05df8f0cb8c2c050ac85f3ee6b24d442ae282fd9
+FROM cgr.dev/chainguard/python@sha256:35d6025b288eb1c40ae631db77ed6cdd26c6f51d898428d8fc9989db7f29e784
 
 # Metadata labels (OCI standard)
 LABEL org.opencontainers.image.title="Foundry Unify"
