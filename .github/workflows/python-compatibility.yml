@@ -38,7 +38,7 @@ jobs:
     uses: ByronWilliamsCPA/.github/.github/workflows/python-compatibility.yml@c75ea0780b8731a00a0b6ff46b68d69b45fb08b6 # v11.0.0
     with:
       no-build: false  # hatchling build backend: editable install must build
-      python-versions: '["3.10", "3.11", "3.12", "3.13"]'
+      python-versions: '["3.11", "3.12", "3.13", "3.14", "3.15"]'
       operating-systems: '["ubuntu-latest"]'
       include-macos: true
       include-windows: true

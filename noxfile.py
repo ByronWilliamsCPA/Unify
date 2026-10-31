@@ -4,7 +4,7 @@ Nox-UV uses UV for fast virtual environment creation and package installation.
 This file defines sessions organized by the test pyramid pattern.
 
 Test Pyramid Sessions:
-    nox -s test            # Run full test suite across Python 3.10-3.14
+    nox -s test            # Run full test suite across Python 3.11-3.15
     nox -s unit            # Run unit tests only (fast, 85%+ coverage target)
     nox -s integration     # Run integration tests (70%+ coverage target)
     nox -s fast            # Fast dev loop - excludes slow tests
@@ -13,8 +13,8 @@ Test Pyramid Sessions:
     nox -s mutate          # Run mutation testing (if mutation testing enabled)
 
 Code Quality Sessions:
-    nox -s lint            # Run Ruff linting across Python 3.10-3.14
-    nox -s typecheck       # Run MyPy type checking across Python 3.10-3.14
+    nox -s lint            # Run Ruff linting across Python 3.11-3.15
+    nox -s typecheck       # Run MyPy type checking across Python 3.11-3.15
     nox -s docstrings      # Check docstring coverage
 
 Documentation Sessions:
@@ -292,12 +292,12 @@ def assuredoss(session: nox.Session) -> None:
 # ==========================================
 
 
-@nox.session(python=["3.10", "3.11", "3.12", "3.13", "3.14"])
+@nox.session(python=["3.11", "3.12", "3.13", "3.14", "3.15"])
 def test(session: nox.Session) -> None:
     """Run full test suite across multiple Python versions.
 
     This session runs all tests with coverage reporting
-    across Python 3.10, 3.11, 3.12, 3.13, and 3.14 to ensure compatibility.
+    across Python 3.11, 3.12, 3.13, 3.14, and 3.15 to ensure compatibility.
     """
     session.install("-e", ".[dev]")
     session.run(
@@ -426,7 +426,7 @@ def mutate(session: nox.Session) -> None:
 # ==========================================
 
 
-@nox.session(python=["3.10", "3.11", "3.12", "3.13", "3.14"])
+@nox.session(python=["3.11", "3.12", "3.13", "3.14", "3.15"])
 def lint(session: nox.Session) -> None:
     """Run linting across multiple Python versions.
 
@@ -439,7 +439,7 @@ def lint(session: nox.Session) -> None:
     session.run("python", "scripts/check_type_hints.py", "--src-dir=src")
 
 
-@nox.session(python=["3.10", "3.11", "3.12", "3.13", "3.14"])
+@nox.session(python=["3.11", "3.12", "3.13", "3.14", "3.15"])
 def typecheck(session: nox.Session) -> None:
     """Run type checking across multiple Python versions.
 

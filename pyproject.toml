@@ -9,7 +9,7 @@ authors = [
     {name = "Byron Williams", email = "byronawilliams@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.16"
 license = {text = "MIT"}
 keywords = []
 classifiers = [
@@ -28,7 +28,7 @@ dependencies = [
     "rich>=13.5.0",
     # Cross-Version Compatibility Dependencies
     # =========================================
-    # This template targets Python 3.10-3.14. Add version-specific dependencies
+    # This template targets Python 3.11-3.15. Add version-specific dependencies
     # here if your code needs compatibility shims or replacements.
     #
     # COMMON BACKPORTS FOR 3.10 COMPATIBILITY:
@@ -122,8 +122,11 @@ dev = [
 
 # Machine Learning dependencies
 ml = [
-    "torch>=2.9.0",
-    "torchvision>=0.24.0",
+    # torch/torchvision publish no cp315 wheels (or sdist) yet, so the ml extra
+    # cannot install on Python 3.15. #VERIFY: drop the markers once torch
+    # ships Python 3.15 wheels.
+    "torch>=2.9.0; python_full_version < '3.15'",
+    "torchvision>=0.24.0; python_full_version < '3.15'",
     "numpy>=1.24.0",
     "scikit-learn>=1.3.0",
     "tensorboard>=2.14.0",
