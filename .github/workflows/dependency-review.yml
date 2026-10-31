@@ -50,21 +50,8 @@ jobs:
           # docs/known-vulnerabilities.md; remove ids when their entry is
           # resolved.
           #
-          # GHSA-8mgp-746c-j5xp: nltk model-artifact path traversal. nltk is
-          # dev-only, reaching the tree solely through safety in the dev and
-          # supply-chain extras, so it never ships at runtime. The action
-          # reports vulnerabilities only on dependencies a PR adds or changes
-          # (a version bump counts), so without this entry any PR that changes
-          # nltk's locked version, a lock refresh included, fails on an
-          # advisory nobody can act on.
-          # The same advisory is waived in osv-scanner.toml (GHSA alias) and
-          # recorded in [tool.pip-audit].ignore-vuln (PYSEC alias).
-          #
-          # #ASSUME: external resources: no fixed nltk release exists. The
-          # GHSA record runs from introduced 0 to last_affected 3.10.3 with no
-          # fixed event, and 3.10.3 is both the pinned version and the newest
-          # release on PyPI. The conflicting OSV PYSEC-2026-3740 record claims
-          # fixed 3.10.3, but PyPI still reports 3.10.3 as affected.
-          # #VERIFY: drop this id the moment nltk ships a release above
-          # 3.10.3; re-checked at each quarterly review, next 2026-11-02.
-          allow-ghsas: GHSA-8mgp-746c-j5xp
+          # filelock 3.32.7 advisories (fixed only in 4.x; safety caps
+          # filelock<4.0; present in dev, supply-chain and ml extras, not the default
+          # runtime install). #VERIFY: drop when filelock>=4.2.1
+          # resolves; reassess by 2026-11-30.
+          allow-ghsas: GHSA-567q-5qvw-pf92, GHSA-6627-m3xw-93mp, GHSA-69hj-f68j-2879, GHSA-8mx5-7m5m-r77g, GHSA-9c4x-gm8v-wgc4, GHSA-9j6q-wvj5-jgjg, GHSA-9vhv-jxww-xfm5, GHSA-cwqr-hh33-gh44, GHSA-fq56-3cx3-fjxp, GHSA-j8f7-rjxc-mr56, GHSA-m462-7rxw-wvpg, GHSA-rfpc-qcw5-3pc4, GHSA-v4x8-3wr5-3wq8

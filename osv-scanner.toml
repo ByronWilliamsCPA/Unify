@@ -53,15 +53,64 @@
 # advisory on 2026-06-09, so nothing matched them any more and
 # osv-scanner exited 1 with "has unused ignores".
 
-# nltk: no fixed release exists. The OSV record for this advisory is
-# {"introduced": "0"} to {"last_affected": "3.10.3"}, and 3.10.3 is both the
-# version this lockfile pins and the newest release on PyPI, so there is
-# nothing to upgrade to. nltk is not a runtime dependency of foundry-unify:
-# it arrives only through safety, which is declared in the "dev" and
-# "supply-chain" extras, so it never ships in a deployed environment.
-# Tracked in docs/known-vulnerabilities.md; reassess by 2026-11-02.
-# The matching pip-audit entry is [tool.pip-audit].ignore-vuln in
-# pyproject.toml, which keys on the PYSEC alias of this same advisory.
+# nltk: waiver removed 2026-10-31; nltk 3.10.4 fixes both advisories and
+# osv-scanner fails on ignores that match nothing.
+
+# filelock 3.32.7: 13 advisories fixed only in 4.0.9 / 4.2.1. safety requires
+# filelock<4.0, so the lock cannot upgrade. filelock arrives only through
+# safety, python-discovery/virtualenv and torch, so it is present in the dev,
+# supply-chain and ml extras (an ml install has filelock without safety) and
+# absent only from the default runtime install. Accepted 2026-10-31, reassess
+# by 2026-11-30. See docs/known-vulnerabilities.md.
+
 [[IgnoredVulns]]
-id = "GHSA-8mgp-746c-j5xp"
-reason = "nltk 3.10.3 is the latest release and the advisory has no fixed version (last_affected 3.10.3). Dev-only transitive dependency via safety, never present at runtime. Accepted 2026-09-03, reassess by 2026-11-02. See docs/known-vulnerabilities.md."
+id = "GHSA-567q-5qvw-pf92"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-6627-m3xw-93mp"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-69hj-f68j-2879"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-8mx5-7m5m-r77g"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-9c4x-gm8v-wgc4"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-9j6q-wvj5-jgjg"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-9vhv-jxww-xfm5"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-cwqr-hh33-gh44"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-fq56-3cx3-fjxp"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-j8f7-rjxc-mr56"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-m462-7rxw-wvpg"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-rfpc-qcw5-3pc4"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
+
+[[IgnoredVulns]]
+id = "GHSA-v4x8-3wr5-3wq8"
+reason = "filelock 3.32.7 fixed only in 4.x; safety caps filelock<4.0. Transitive dependency present in the dev, supply-chain and ml extras, absent from the default runtime install. Accepted 2026-10-31, reassess by 2026-11-30. See docs/known-vulnerabilities.md."
