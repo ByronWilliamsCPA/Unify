@@ -97,6 +97,27 @@ for id in GHSA-8mgp-746c-j5xp PYSEC-2026-3740; do
 done
 ```
 
+### `filelock` - 13 advisories fixed only in 4.x, capped by `safety`
+
+- **Package**: `filelock` 3.32.7
+- **Advisories**: CVE-2026-112907, CVE-2026-112908, CVE-2026-112909, CVE-2026-112910, CVE-2026-112911, CVE-2026-112912, CVE-2026-112913, CVE-2026-112915, CVE-2026-112935, CVE-2026-112936, CVE-2026-112938, CVE-2026-112939, CVE-2026-112940 (GHSA aliases in `osv-scanner.toml`)
+- **Status**: Accepted. Fixed versions (4.0.9, 4.2.1) are unreachable; dev-only.
+- **First documented**: 2026-10-31
+- **Reassess by**: 2026-11-30
+
+**Why accepted**: `safety` (3.7.0 and later, including 3.8.1) requires
+`filelock>=3.16.1,<4.0`, so `uv lock` cannot resolve a 4.x release while
+`safety` is in the `dev` extra. `filelock` is not imported in `src/` and is
+absent from the runtime install; it arrives through `safety`,
+`python-discovery`/`virtualenv` (nox, pre-commit) and the `ml` extra.
+
+**Suppressions**: `[tool.pip-audit].ignore-vuln` in `pyproject.toml`
+(CVE ids), `[[IgnoredVulns]]` in `osv-scanner.toml` (GHSA ids) and
+`allow-ghsas` in `.github/workflows/dependency-review.yml`.
+
+**Remediation plan**: Remove all suppressions once a `safety` release lifts
+the cap (`uv lock --upgrade-package safety`) or `safety` is replaced.
+
 ## Resolved
 
 Entries below are kept for history. They no longer correspond to any
