@@ -783,7 +783,8 @@ upload_to_vcs_release = true
 ignore-vuln = [
     # filelock 3.32.7: 13 advisories fixed only in filelock 4.0.9 / 4.2.1.
     # safety (dev and supply-chain extras only) requires filelock<4.0, so the
-    # lock cannot move. filelock is not a runtime dependency. Paired with
+    # lock cannot move. filelock is absent from the default runtime install but
+    # present in the dev, supply-chain and ml extras (torch needs it). Paired with
     # docs/known-vulnerabilities.md, osv-scanner.toml and dependency-review.yml.
     #
     # #ASSUME: external resources: safety keeps its filelock<4.0 cap until a
